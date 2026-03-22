@@ -1,0 +1,54 @@
+# --- General / OS ---
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+!.env.example
+
+# --- Python (FastAPI) ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv
+venv/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+# Alembic migrations (Keep the folder, but ignore compiled files)
+apps/api/migrations/versions/*.pyc
+
+# --- Node / React (Vite) ---
+node_modules/
+dist/
+dist-ssr/
+*.local
+.eslintcache
+.stylelintcache
+# Coverage folders for testing
+coverage/
+
+# --- Terraform ---
+# Local terraform state
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+# Terraform crash logs
+crash.log
+# Ignore sensitive provider credentials
+.terraform.lock.hcl
+
+# --- Docker ---
+.docker/
+# If you use local data volumes for Postgres
+pgdata/
+
+# --- Cursor / IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+# Keep your .cursorrules and ARCHITECTURE.md!

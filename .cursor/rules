@@ -1,0 +1,1 @@
+Always refer to @SPECIFICATION.md before generating code. Ensure all FastAPI routes follow the defined schema and all React components use Tailwind CSS for styling.
