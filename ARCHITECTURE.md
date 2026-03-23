@@ -52,6 +52,7 @@ A cloud-native portfolio platform featuring a public gallery, an administrative 
 - `GET /api/v1/search?q=query`: Search projects by title or tags.
 
 ### Admin (Admin-Web)
+- `GET /api/v1/admin/projects`: List all projects (Paginated).
 - `POST /api/v1/admin/projects`: Create new project.
 - `PATCH /api/v1/admin/projects/{id}`: Update project metadata/content.
 - `DELETE /api/v1/admin/projects/{id}`: Remove project and associated S3 assets.

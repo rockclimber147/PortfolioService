@@ -1,9 +1,9 @@
 """SQLModel table definitions for the portfolio API (see ARCHITECTURE.md)."""
 
-from __future__ import annotations
-
 import uuid
 from datetime import datetime, timezone
+from typing import List, Optional
+
 from sqlalchemy import Column, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, Relationship, SQLModel
@@ -28,7 +28,7 @@ class Project(SQLModel, table=True):
     created_at: datetime = Field(default_factory=utc_now)
     date: datetime = Field(default_factory=utc_now)
 
-    media_assets: list["MediaAsset"] = Relationship(
+    media_assets: List["MediaAsset"] = Relationship(
         back_populates="project",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"},
     )
@@ -43,4 +43,4 @@ class MediaAsset(SQLModel, table=True):
     is_thumbnail: bool = Field(default=False)
     display_order: int = Field(default=0)
 
-    project: Project | None = Relationship(back_populates="media_assets")
+    project: Optional["Project"] = Relationship(back_populates="media_assets")
