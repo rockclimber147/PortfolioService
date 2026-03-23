@@ -3,11 +3,11 @@ resource "aws_security_group" "rds_sg" {
   vpc_id = aws_vpc.main.id
 
   ingress {
+    description = "PostgreSQL from configured CIDR"
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    # CRITICAL: Replace with your actual public IP (check whatismyip.com)
-    cidr_blocks = ["174.7.110.242/32"]
+    cidr_blocks = [var.developer_ingress_cidr]
   }
 
   egress {
@@ -16,6 +16,8 @@ resource "aws_security_group" "rds_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = { Name = "portfolio-rds-sg" }
 }
 
 resource "aws_db_instance" "dev_db" {
@@ -23,16 +25,20 @@ resource "aws_db_instance" "dev_db" {
   db_name              = "portfolio"
   engine               = "postgres"
   engine_version       = "16"
-  instance_class       = "db.t3.micro" # Free Tier
+  instance_class       = "db.t3.micro"
   username             = "dbadmin"
-  password = random_password.db_master_password.result
+  password             = random_password.db_master_password.result
   parameter_group_name = "default.postgres16"
-  apply_immediately = true
-  
+  apply_immediately    = true
+
   db_subnet_group_name   = aws_db_subnet_group.default.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  publicly_accessible    = true
-  skip_final_snapshot    = true
+  publicly_accessible      = true
+  skip_final_snapshot      = true
 
-  depends_on = [aws_secretsmanager_secret_version.db_password_val]
+  depends_on = [
+    aws_route_table_association.public_a,
+    aws_route_table_association.public_b,
+    aws_secretsmanager_secret_version.db_password_val,
+  ]
 }
