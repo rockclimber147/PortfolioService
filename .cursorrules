@@ -1,9 +1,0 @@
-Always refer to @ARCHITECTURE.md before generating code.
-
-Use FastAPI with SQLModel for the backend.
-
-Use React with Vite, Tailwind CSS, and TypeScript for frontends.
-
-Ensure all API endpoints have proper error handling and type hints.
-
-For every service, ensure there is a Dockerfile for Kubernetes compatibility.

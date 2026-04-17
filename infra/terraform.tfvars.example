@@ -1,2 +1,0 @@
-# Copy to terraform.tfvars (gitignored) and set your current public IPv4 /32.
-# developer_ingress_cidr = "203.0.113.50/32"

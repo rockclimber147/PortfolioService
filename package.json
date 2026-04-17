@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/web/*"
+  ],
+  "scripts": {
+    "dev:admin": "npm run dev -w apps/web/admin",
+    "dev:client": "npm run dev -w apps/web/client",
+    "dev": "npm run dev:admin & npm run dev:client & wait"
+  }
+}
