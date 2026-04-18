@@ -288,18 +288,14 @@
         "properties": {
           "title": {
             "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
             "title": "Title"
           },
           "slug": {
             "type": "string",
-            "pattern": "^[a-z0-9-]+$",
             "title": "Slug"
           },
           "short_description": {
             "type": "string",
-            "maxLength": 250,
             "title": "Short Description"
           },
           "thumbnail_url": {
@@ -315,11 +311,6 @@
               }
             ],
             "title": "Thumbnail Url"
-          },
-          "is_featured": {
-            "type": "boolean",
-            "title": "Is Featured",
-            "default": false
           },
           "challenge": {
             "type": "string",
@@ -377,18 +368,14 @@
         "properties": {
           "title": {
             "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
             "title": "Title"
           },
           "slug": {
             "type": "string",
-            "pattern": "^[a-z0-9-]+$",
             "title": "Slug"
           },
           "short_description": {
             "type": "string",
-            "maxLength": 250,
             "title": "Short Description"
           },
           "thumbnail_url": {
@@ -405,11 +392,6 @@
             ],
             "title": "Thumbnail Url"
           },
-          "is_featured": {
-            "type": "boolean",
-            "title": "Is Featured",
-            "default": false
-          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -420,44 +402,16 @@
             "format": "date-time",
             "title": "Created At"
           },
-          "technologies": {
-            "items": {
-              "$ref": "#/components/schemas/Technology"
-            },
-            "type": "array",
-            "title": "Technologies"
-          },
           "challenge": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Challenge"
           },
           "solution": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Solution"
           },
           "impact": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "type": "string",
             "title": "Impact"
           },
           "github_url": {
@@ -487,14 +441,6 @@
               }
             ],
             "title": "Live Url"
-          },
-          "images": {
-            "items": {
-              "$ref": "#/components/schemas/ProjectImage"
-            },
-            "type": "array",
-            "title": "Images",
-            "default": []
           }
         },
         "type": "object",
@@ -504,69 +450,24 @@
           "short_description",
           "id",
           "created_at",
-          "technologies"
+          "challenge",
+          "solution",
+          "impact"
         ],
         "title": "ProjectDetail"
-      },
-      "ProjectImage": {
-        "properties": {
-          "url": {
-            "type": "string",
-            "maxLength": 2083,
-            "minLength": 1,
-            "format": "uri",
-            "title": "Url"
-          },
-          "caption": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Caption"
-          },
-          "display_order": {
-            "type": "integer",
-            "title": "Display Order",
-            "default": 0
-          },
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "project_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Project Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "url",
-          "id",
-          "project_id"
-        ],
-        "title": "ProjectImage"
       },
       "ProjectSummary": {
         "properties": {
           "title": {
             "type": "string",
-            "maxLength": 100,
-            "minLength": 1,
             "title": "Title"
           },
           "slug": {
             "type": "string",
-            "pattern": "^[a-z0-9-]+$",
             "title": "Slug"
           },
           "short_description": {
             "type": "string",
-            "maxLength": 250,
             "title": "Short Description"
           },
           "thumbnail_url": {
@@ -583,11 +484,6 @@
             ],
             "title": "Thumbnail Url"
           },
-          "is_featured": {
-            "type": "boolean",
-            "title": "Is Featured",
-            "default": false
-          },
           "id": {
             "type": "string",
             "format": "uuid",
@@ -597,13 +493,6 @@
             "type": "string",
             "format": "date-time",
             "title": "Created At"
-          },
-          "technologies": {
-            "items": {
-              "$ref": "#/components/schemas/Technology"
-            },
-            "type": "array",
-            "title": "Technologies"
           }
         },
         "type": "object",
@@ -612,39 +501,9 @@
           "slug",
           "short_description",
           "id",
-          "created_at",
-          "technologies"
+          "created_at"
         ],
         "title": "ProjectSummary"
-      },
-      "Technology": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "icon_name": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Icon Name"
-          },
-          "id": {
-            "type": "integer",
-            "title": "Id"
-          }
-        },
-        "type": "object",
-        "required": [
-          "name",
-          "id"
-        ],
-        "title": "Technology"
       },
       "ValidationError": {
         "properties": {

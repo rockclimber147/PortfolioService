@@ -1,5 +1,11 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import select, func
+from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
+from sqlmodel import or_, col
+
+from database import get_session
+from models import Project
 from schemas import ProjectSummary, ProjectDetail
 
 router = APIRouter(
@@ -8,17 +14,48 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[ProjectSummary])
-def list_projects(
+async def list_projects(
     skip: int = 0, 
     limit: int = 10,
-    tag: Optional[str] = None
+    search: Optional[str] = None,
+    session: AsyncSession = Depends(get_session)
 ):
     """Returns a paginated list of project cards for the main gallery."""
-    # TODO: Implement Supabase select with pagination
-    return []
+    # Start the query
+    statement = select(Project).offset(skip).limit(limit)
+    
+    # Optional: Basic Search Filter (Case-insensitive title search)
+    if search:
+        search_filter = f"%{search}%"
+        statement = statement.where(
+            or_(
+                col(Project.title).ilike(search_filter),
+                col(Project.short_description).ilike(search_filter),
+                col(Project.challenge).ilike(search_filter)
+            )
+        )
+    
+    # Execute the query
+    result = await session.execute(statement)
+    projects = result.scalars().all()
+    
+    return projects
 
 @router.get("/{slug}", response_model=ProjectDetail)
-def get_project_detail(slug: str):
-    """Returns the full details for a single project page."""
-    # TODO: Implement Supabase filter by slug
-    return {}
+async def get_project_detail(
+    slug: str, 
+    session: AsyncSession = Depends(get_session)
+):
+    """Returns the full details for a single project page by its unique slug."""
+    # Find the project where the slug matches
+    statement = select(Project).where(Project.slug == slug)
+    result = await session.execute(statement)
+    project = result.scalar_one_or_none()
+    
+    if not project:
+        raise HTTPException(
+            status_code=404, 
+            detail=f"Project with slug '{slug}' not found"
+        )
+    
+    return project
