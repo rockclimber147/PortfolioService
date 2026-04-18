@@ -3,11 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from sqlmodel import col, select
 from sqlalchemy.orm import selectinload
-from typing import cast, Any
+from typing import List
 
 from database import get_session
 from schemas import ProjectCreate, ProjectDetail, ProjectUpdate
 from services.projects import ProjectService
+from services.tags import TagService
+from schemas.tags import TagCreate, TagRead, TagUpdate
 
 router = APIRouter(tags=["Admin CRUD"])
 
@@ -50,3 +52,26 @@ async def update_project(
         )
         
     return db_project
+
+
+@router.post("/tags", response_model=TagRead, status_code=201)
+async def create_tag(tag_in: TagCreate, session: AsyncSession = Depends(get_session)):
+    return await TagService.create_tag(session, tag_in)
+
+@router.get("/tags", response_model=List[TagRead])
+async def list_tags(session: AsyncSession = Depends(get_session)):
+    return await TagService.list_tags(session)
+
+@router.patch("/tags/{tag_id}", response_model=TagRead)
+async def update_tag(tag_id: UUID, tag_in: TagUpdate, session: AsyncSession = Depends(get_session)):
+    db_tag = await TagService.update_tag(session, tag_id, tag_in)
+    if not db_tag:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    return db_tag
+
+@router.delete("/tags/{tag_id}", status_code=204)
+async def delete_tag(tag_id: UUID, session: AsyncSession = Depends(get_session)):
+    success = await TagService.delete_tag(session, tag_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Tag not found")
+    return None

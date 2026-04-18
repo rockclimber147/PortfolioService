@@ -2,21 +2,7 @@ from pydantic import BaseModel, HttpUrl
 from uuid import UUID
 from datetime import datetime
 from typing import Optional, List
-
-# --- TAG SCHEMAS ---
-
-class TagBase(BaseModel):
-    name: str
-    slug: str
-
-class TagRead(TagBase):
-    id: UUID
-
-class TagCreate(TagBase):
-    pass
-
-
-# --- PROJECT SCHEMAS ---
+from .tags import TagRead
 
 class ProjectBase(BaseModel):
     title: str
