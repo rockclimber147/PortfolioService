@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -16,7 +19,7 @@ jobs:
         with:
           node-version: 20
 
-      # 1. Build the Client
+      # BUILD CLIENT
       - name: Build Client
         run: |
           cd apps/web/client
@@ -25,7 +28,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.PROD_API_URL }}
 
-      # 2. Build the Admin
+      # BUILD ADMIN
       - name: Build Admin
         run: |
           cd apps/web/admin
@@ -34,16 +37,18 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.PROD_API_URL }}
 
-      # 3. Merge builds into a single 'dist' folder
+      # MERGE BUILDS (Clean pathing)
       - name: Merge Builds
         run: |
-          mkdir final_dist
-          cp -r apps/web/client/dist/* final_dist/
           mkdir -p final_dist/admin
+          # Copy client files to root
+          cp -r apps/web/client/dist/* final_dist/
+          # Copy admin files to /admin subfolder
           cp -r apps/web/admin/dist/* final_dist/admin/
+          # Create .nojekyll to prevent GH from ignoring folders starting with underscores
+          touch final_dist/.nojekyll
 
-      # 4. Handle Client-side Routing (The 404 Hack)
-      # GitHub Pages doesn't support SPA routing natively.
+      # SPA 404 HACK
       - name: SPA Fix
         run: |
           cp final_dist/index.html final_dist/404.html
@@ -53,4 +58,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./final_dist
+          publish_dir: ./final_dist  # Ensure the leading ./ is present
