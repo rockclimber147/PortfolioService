@@ -1,5 +1,5 @@
 import { ApiServiceBase } from "./base";
-import type { ProjectDetail, ProjectCreate } from "../types";
+import type { ProjectDetail, ProjectCreate, ProjectSummary } from "../types";
 
 export class AdminApiService extends ApiServiceBase {
   private readonly apiKey: string;
@@ -25,5 +25,11 @@ export class AdminApiService extends ApiServiceBase {
       method: "POST",
       body: JSON.stringify(data),
     });
+  }
+
+  async listProjects(): Promise<ProjectSummary[]> {
+    // Note: Ensure your FastAPI router has this endpoint mapped 
+    // to the logic that returns all projects.
+    return this.request<ProjectSummary[]>("/admin/projects/");
   }
 }

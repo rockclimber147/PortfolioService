@@ -1,7 +1,11 @@
-import './App.css'
-import { SHARED_TEST_MESSAGE } from '@portfolio/shared';
+import { useAuth } from './context/AdminAuthContext';
+import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
 
-function App() {
-  return <h1>{SHARED_TEST_MESSAGE}</h1>;
+export default function App() {
+  const { apiKey } = useAuth();
+
+  // If we don't have a key, show login. 
+  // If we do, show the app.
+  return apiKey ? <Dashboard /> : <Login />;
 }
-export default App
