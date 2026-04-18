@@ -1,0 +1,56 @@
+name: Deploy Frontends to GH Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 1. Build the Client
+      - name: Build Client
+        run: |
+          cd apps/web/client
+          npm install
+          npm run build
+        env:
+          VITE_API_URL: ${{ secrets.PROD_API_URL }}
+
+      # 2. Build the Admin
+      - name: Build Admin
+        run: |
+          cd apps/web/admin
+          npm install
+          npm run build
+        env:
+          VITE_API_URL: ${{ secrets.PROD_API_URL }}
+
+      # 3. Merge builds into a single 'dist' folder
+      - name: Merge Builds
+        run: |
+          mkdir final_dist
+          cp -r apps/web/client/dist/* final_dist/
+          mkdir -p final_dist/admin
+          cp -r apps/web/admin/dist/* final_dist/admin/
+
+      # 4. Handle Client-side Routing (The 404 Hack)
+      # GitHub Pages doesn't support SPA routing natively.
+      - name: SPA Fix
+        run: |
+          cp final_dist/index.html final_dist/404.html
+          cp final_dist/admin/index.html final_dist/admin/404.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./final_dist
