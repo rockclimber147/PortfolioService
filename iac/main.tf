@@ -1,15 +1,21 @@
 resource "supabase_project" "portfolio" {
-  organization_id   = var.supabase_org_id # Use the Org Slug here
-  name              = "Daylen-Portfolio"
+  organization_id   = var.supabase_org_id
+  name              = "Daylen-Portfolio-Dev" # Updated display name for clarity
   database_password = var.db_password
-  region            = "ca-central-1" # Canada (Central) is best for BC
+  region            = "ca-central-1"
 }
 
-output "supabase_url" {
-  value = "https://${supabase_project.portfolio.id}.supabase.co"
+resource "supabase_project" "portfolio_prod" {
+  organization_id   = var.supabase_org_id
+  name              = "Daylen-Portfolio-Prod"
+  database_password = var.db_password
+  region            = "ca-central-1"
 }
 
-# Output the DB Host for our connection string
-output "db_host" {
+output "dev_db_host" {
   value = "db.${supabase_project.portfolio.id}.supabase.co"
+}
+
+output "prod_db_host" {
+  value = "db.${supabase_project.portfolio_prod.id}.supabase.co"
 }
