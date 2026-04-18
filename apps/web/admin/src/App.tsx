@@ -8,7 +8,7 @@ export default function App() {
   const { apiKey } = useAuth();
 
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <BrowserRouter>
       <Routes>
         {/* If no key, always show Login. If key exists, go to Dashboard */}
         <Route 

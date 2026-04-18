@@ -4,7 +4,7 @@
   "workspaces": [
     "apps/web/client",
     "apps/web/admin",
-    "packages/shared"
+    "apps/web/shared"
   ],
   "scripts": {
     "dev:admin": "npm run dev -w apps/web/admin",
