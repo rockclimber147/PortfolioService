@@ -13,11 +13,7 @@ async def create_project(
     project_in: ProjectCreate, 
     session: AsyncSession = Depends(get_session)
 ):
-    # 'mode="json"' converts HttpUrl objects into plain strings 
-    # and datetimes into ISO format strings.
     project_data = project_in.model_dump(mode="json")
-    
-    # Create the model using the dictionary
     db_project = Project(**project_data)
     
     session.add(db_project)
