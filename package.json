@@ -2,7 +2,9 @@
   "name": "portfolio-monorepo",
   "private": true,
   "workspaces": [
-    "apps/web/*"
+    "apps/web/client",
+    "apps/web/admin",
+    "packages/shared"
   ],
   "scripts": {
     "dev:admin": "npm run dev -w apps/web/admin",

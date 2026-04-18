@@ -18,26 +18,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm' # Speeds up subsequent runs by caching node_modules
 
-      # BUILD CLIENT
+      # 1. Workspace Install (Root)
+      # This handles all apps and the shared package in one go
+      - name: Install Dependencies
+        run: npm install
+
+      # 2. Build Client using Workspace flag
       - name: Build Client
-        run: |
-          cd apps/web/client
-          npm install
-          npm run build
+        run: npm run build -w apps/web/client
         env:
           VITE_API_URL: ${{ secrets.PROD_API_URL }}
 
-      # BUILD ADMIN
+      # 3. Build Admin using Workspace flag
       - name: Build Admin
-        run: |
-          cd apps/web/admin
-          npm install
-          npm run build
+        run: npm run build -w apps/web/admin
         env:
           VITE_API_URL: ${{ secrets.PROD_API_URL }}
 
-      # MERGE BUILDS (Clean pathing)
+      # 4. Merge Builds (Clean pathing)
       - name: Merge Builds
         run: |
           mkdir -p final_dist/admin
@@ -45,17 +45,19 @@ jobs:
           cp -r apps/web/client/dist/* final_dist/
           # Copy admin files to /admin subfolder
           cp -r apps/web/admin/dist/* final_dist/admin/
-          # Create .nojekyll to prevent GH from ignoring folders starting with underscores
+          # Prevent Jekyll from ignoring files/folders with underscores
           touch final_dist/.nojekyll
 
-      # SPA 404 HACK
+      # 5. SPA 404 HACK
+      # Crucial for React Router deep links on GitHub Pages
       - name: SPA Fix
         run: |
           cp final_dist/index.html final_dist/404.html
           cp final_dist/admin/index.html final_dist/admin/404.html
 
+      # 6. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./final_dist  # Ensure the leading ./ is present
+          publish_dir: ./final_dist
