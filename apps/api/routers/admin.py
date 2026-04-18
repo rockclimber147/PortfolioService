@@ -9,8 +9,17 @@ from database import get_session
 from schemas import ProjectCreate, ProjectDetail, ProjectUpdate
 from services import ProjectService, TagService
 from schemas import TagCreate, TagRead, TagUpdate
+from envconfig import EnvironmentConfig
 
 router = APIRouter(tags=["Admin CRUD"])
+
+@router.post("/verify")
+async def verify_admin_key():
+    """
+    If this code is reached, the Depends(AuthService.verify_admin) 
+    has already passed.
+    """
+    return {"status": "success"}
 
 @router.post("/projects", response_model=ProjectDetail, status_code=status.HTTP_201_CREATED)
 async def create_project(

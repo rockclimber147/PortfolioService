@@ -9,6 +9,17 @@ export class AdminApiService extends ApiServiceBase {
     this.apiKey = apiKey;
   }
 
+  async verifyKey(): Promise<boolean> {
+    try {
+        await this.request<{status: string}>("/admin/verify", {
+          method: "POST",
+        });
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
   // Override the request method or just pass headers in each call
   protected override async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     return super.request<T>(endpoint, {
