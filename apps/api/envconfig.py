@@ -13,4 +13,4 @@ class EnvironmentConfig:
         return val
     
     DATABASE_URL: str = load_env("DATABASE_URL")
-    MIGRATION_URL: str = load_env("MIGRATION_URL")
+    ADMIN_SECRET_KEY: str = load_env("ADMIN_SECRET_KEY")

@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from contextlib import asynccontextmanager
 
 from database import engine
 from models import SQLModel, Project
 from routers import client, admin
+from services.auth import AuthService
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,7 +22,11 @@ app = FastAPI(
 )
 
 app.include_router(client.router)
-app.include_router(admin.router)
+app.include_router(
+    admin.router,
+    prefix="/admin",
+    dependencies=[Depends(AuthService.verify_admin)]
+)
 
 @app.get("/")
 def read_root():
