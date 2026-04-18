@@ -36,6 +36,7 @@ class Project(SQLModel, table=True):
     github_url: Optional[str] = None
     live_url: Optional[str] = None
     is_featured: bool = False
+    is_draft: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     # Relationship to tags
