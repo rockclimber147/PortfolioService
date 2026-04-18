@@ -6,6 +6,7 @@ from database import engine
 from models import SQLModel, Project
 from routers import client, admin
 from services.auth import AuthService
+from envconfig import EnvironmentConfig
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,17 +24,19 @@ app = FastAPI(
 )
 
 origins = [
-    "http://localhost:5174",  # Your Vite dev server
-    "http://localhost:5173",  # Sometimes Vite uses 5173
-    "http://localhost:3000",  # Common for other frameworks
+    EnvironmentConfig.CLIENT_URL,
+    EnvironmentConfig.ADMIN_URL,
 ]
+
+for origin in origins:
+    print(origin)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allows GET, POST, PATCH, etc.
-    allow_headers=["*"],  # Allows X-API-KEY, Content-Type, etc.
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(client.router)

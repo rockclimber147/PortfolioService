@@ -14,3 +14,5 @@ class EnvironmentConfig:
     
     DATABASE_URL: str = load_env("DATABASE_URL")
     ADMIN_SECRET_KEY: str = load_env("ADMIN_SECRET_KEY")
+    CLIENT_URL: str = load_env("CLIENT_URL")
+    ADMIN_URL: str = load_env("ADMIN_URL")
