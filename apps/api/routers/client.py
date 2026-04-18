@@ -5,10 +5,11 @@ from typing import List, Optional, cast, Any
 from sqlmodel import or_, col
 from sqlalchemy.orm import selectinload
 
+from schemas import TagRead
 from database import get_session
 from models import Project
 from schemas import ProjectSummary, ProjectDetail
-from services.projects import ProjectService
+from services import ProjectService, TagService
 
 router = APIRouter(
     prefix="/projects",
@@ -30,3 +31,7 @@ async def get_project_detail(slug: str, session: AsyncSession = Depends(get_sess
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     return project
+
+@router.get("/tags", response_model=List[TagRead])
+async def list_tags(session: AsyncSession = Depends(get_session)):
+    return await TagService.list_tags(session)
