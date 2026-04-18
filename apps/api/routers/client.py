@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Optional
+from typing import List, Optional, cast, Any
 from sqlmodel import or_, col
+from sqlalchemy.orm import selectinload
 
 from database import get_session
 from models import Project
@@ -20,22 +21,24 @@ async def list_projects(
     search: Optional[str] = None,
     session: AsyncSession = Depends(get_session)
 ):
-    """Returns a paginated list of project cards for the main gallery."""
-    # Start the query
-    statement = select(Project).offset(skip).limit(limit)
+    # 1. Use .options(selectinload(Project.tags)) 
+    # This fetches projects AND their tags in one (or two optimized) async calls.
+    statement = (
+        select(Project)
+        .offset(skip)
+        .limit(limit)
+        .options(selectinload(cast(Any, Project.tags)))
+    )
     
-    # Optional: Basic Search Filter (Case-insensitive title search)
     if search:
         search_filter = f"%{search}%"
         statement = statement.where(
             or_(
                 col(Project.title).ilike(search_filter),
-                col(Project.short_description).ilike(search_filter),
-                col(Project.challenge).ilike(search_filter)
+                col(Project.short_description).ilike(search_filter)
             )
         )
     
-    # Execute the query
     result = await session.execute(statement)
     projects = result.scalars().all()
     
