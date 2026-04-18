@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel import select, or_, col
 
 from models import Project, Tag
-from schemas import ProjectCreate
+from schemas import ProjectCreate, ProjectUpdate
 
 class ProjectService:
     @staticmethod
@@ -72,3 +72,37 @@ class ProjectService:
         # 3. Refresh with tags loaded to avoid MissingGreenlet in the response
         # We re-fetch with selectinload because session.refresh() doesn't eager load relationships
         return await ProjectService.get_by_id(session, db_project.id) # type: ignore
+    
+    @staticmethod
+    async def update_project(
+        session: AsyncSession, 
+        project_id: UUID, 
+        project_in: ProjectUpdate # A schema with all Optional fields
+    ) -> Optional[Project]:
+        # 1. Fetch the existing project with tags eager-loaded
+        db_project = await ProjectService.get_by_id(session, project_id)
+        if not db_project:
+            return None
+
+        # 2. Update standard fields
+        update_data = project_in.model_dump(exclude_unset=True, exclude={"tag_ids"}, mode="json")
+        for key, value in update_data.items():
+            setattr(db_project, key, value)
+
+        # 3. Handle Tag synchronization
+        if project_in.tag_ids is not None:
+            # Fetch the new Tag objects from the DB
+            tag_statement = select(Tag).where(col(Tag.id).in_(project_in.tag_ids))
+            tag_result = await session.execute(tag_statement)
+            new_tags = list(tag_result.scalars().all())
+            
+            # Overwrite the relationship list. 
+            # SQLAlchemy/SQLModel automatically handles deleting old links 
+            # in the 'project_tag_links' table and creating new ones.
+            db_project.tags = new_tags
+
+        session.add(db_project)
+        await session.commit()
+        
+        # Re-fetch to ensure everything is fresh for the response
+        return await ProjectService.get_by_id(session, project_id)

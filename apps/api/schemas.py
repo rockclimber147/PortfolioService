@@ -48,3 +48,18 @@ class ProjectCreate(ProjectBase):
     github_url: Optional[HttpUrl] = None
     live_url: Optional[HttpUrl] = None
     tag_ids: Optional[List[UUID]] = None
+
+class ProjectUpdate(BaseModel):
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    short_description: Optional[str] = None
+    challenge: Optional[str] = None
+    solution: Optional[str] = None
+    impact: Optional[str] = None
+    thumbnail_url: Optional[HttpUrl] = None
+    github_url: Optional[HttpUrl] = None
+    live_url: Optional[HttpUrl] = None
+    is_featured: Optional[bool] = None
+    is_draft: Optional[bool] = None
+    # We include tag_ids here so we can update the relationships
+    tag_ids: Optional[List[UUID]] = None

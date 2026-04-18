@@ -6,8 +6,7 @@ from sqlalchemy.orm import selectinload
 from typing import cast, Any
 
 from database import get_session
-from models import Project
-from schemas import ProjectCreate, ProjectDetail
+from schemas import ProjectCreate, ProjectDetail, ProjectUpdate
 from services.projects import ProjectService
 
 router = APIRouter(tags=["Admin CRUD"])
@@ -29,4 +28,25 @@ async def get_project(
     db_project = await ProjectService.get_by_id(session, project_id)
     if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")
+    return db_project
+
+
+@router.patch("/projects/{project_id}", response_model=ProjectDetail)
+async def update_project(
+    project_id: UUID,
+    project_in: ProjectUpdate,
+    session: AsyncSession = Depends(get_session)
+):
+    """
+    Updates an existing project. 
+    Only fields provided in the request body will be changed.
+    """
+    db_project = await ProjectService.update_project(session, project_id, project_in)
+    
+    if not db_project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Project not found"
+        )
+        
     return db_project
