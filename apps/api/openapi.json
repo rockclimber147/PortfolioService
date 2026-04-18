@@ -146,6 +146,109 @@
         }
       }
     },
+    "/admin/verify": {
+      "post": {
+        "tags": [
+          "Admin CRUD"
+        ],
+        "summary": "Verify Admin Key",
+        "description": "If this code is reached, the Depends(AuthService.verify_admin) \nhas already passed.",
+        "operationId": "verify_admin_key_admin_verify_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/admin/projects/": {
+      "get": {
+        "tags": [
+          "Admin CRUD"
+        ],
+        "summary": "List Projects",
+        "operationId": "list_projects_admin_projects__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectAdminRead"
+                  },
+                  "title": "Response List Projects Admin Projects  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admin/projects": {
       "post": {
         "tags": [
@@ -474,6 +577,116 @@
         "type": "object",
         "title": "HTTPValidationError"
       },
+      "ProjectAdminRead": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "short_description": {
+            "type": "string",
+            "title": "Short Description"
+          },
+          "thumbnail_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnail Url"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagRead"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": []
+          },
+          "challenge": {
+            "type": "string",
+            "title": "Challenge"
+          },
+          "solution": {
+            "type": "string",
+            "title": "Solution"
+          },
+          "impact": {
+            "type": "string",
+            "title": "Impact"
+          },
+          "github_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Github Url"
+          },
+          "live_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Live Url"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "title": "Is Featured"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "slug",
+          "short_description",
+          "id",
+          "created_at",
+          "challenge",
+          "solution",
+          "impact",
+          "is_featured",
+          "is_draft"
+        ],
+        "title": "ProjectAdminRead"
+      },
       "ProjectCreate": {
         "properties": {
           "title": {
@@ -541,6 +754,16 @@
               }
             ],
             "title": "Live Url"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "title": "Is Featured",
+            "default": false
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": true
           },
           "tag_ids": {
             "anyOf": [
@@ -654,6 +877,10 @@
               }
             ],
             "title": "Live Url"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "title": "Is Featured"
           }
         },
         "type": "object",
@@ -665,7 +892,8 @@
           "created_at",
           "challenge",
           "solution",
-          "impact"
+          "impact",
+          "is_featured"
         ],
         "title": "ProjectDetail"
       },

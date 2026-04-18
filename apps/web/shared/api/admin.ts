@@ -1,5 +1,5 @@
 import { ApiServiceBase } from "./base";
-import type { ProjectDetail, ProjectCreate, ProjectSummary } from "../types";
+import type { ProjectDetail, ProjectCreate, ProjectAdminRead } from "../types";
 
 export class AdminApiService extends ApiServiceBase {
   private readonly apiKey: string;
@@ -38,9 +38,9 @@ export class AdminApiService extends ApiServiceBase {
     });
   }
 
-  async listProjects(): Promise<ProjectSummary[]> {
+  async listProjects(): Promise<ProjectAdminRead[]> {
     // Note: Ensure your FastAPI router has this endpoint mapped 
     // to the logic that returns all projects.
-    return this.request<ProjectSummary[]>("/admin/projects/");
+    return this.request<ProjectAdminRead[]>("/admin/projects/");
   }
 }

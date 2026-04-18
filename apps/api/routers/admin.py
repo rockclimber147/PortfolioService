@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from sqlmodel import col, select
 from sqlalchemy.orm import selectinload
-from typing import List
+from typing import List, Optional
 
 from database import get_session
-from schemas import ProjectCreate, ProjectDetail, ProjectUpdate
+from schemas import ProjectCreate, ProjectDetail, ProjectUpdate, ProjectAdminRead
 from services import ProjectService, TagService
 from schemas import TagCreate, TagRead, TagUpdate
 from envconfig import EnvironmentConfig
@@ -20,6 +20,15 @@ async def verify_admin_key():
     has already passed.
     """
     return {"status": "success"}
+
+@router.get("/projects/", response_model=List[ProjectAdminRead])
+async def list_projects(
+    skip: int = 0, 
+    limit: int = 10,
+    search: Optional[str] = None,
+    session: AsyncSession = Depends(get_session)
+):
+    return await ProjectService.list_projects(session, skip, limit, search)
 
 @router.post("/projects", response_model=ProjectDetail, status_code=status.HTTP_201_CREATED)
 async def create_project(

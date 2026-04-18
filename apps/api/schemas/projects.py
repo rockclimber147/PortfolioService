@@ -10,29 +10,34 @@ class ProjectBase(BaseModel):
     short_description: str
     thumbnail_url: Optional[HttpUrl] = None
 
-# For Project Cards (Gallery View)
+# For Project Cards (Public Gallery View)
 class ProjectSummary(ProjectBase):
     id: UUID
     created_at: datetime
-    # We include a list of basic tags so the gallery can show badges
     tags: List[TagRead] = []
 
-# For the Full Detail Page
+# For the Full Detail Page (Public)
 class ProjectDetail(ProjectSummary):
     challenge: str
     solution: str
     impact: str
     github_url: Optional[HttpUrl] = None
     live_url: Optional[HttpUrl] = None
-    # Inherits tags from ProjectSummary
+    is_featured: bool
 
-# For the Admin Create/Update forms
+
+class ProjectAdminRead(ProjectDetail):
+    is_draft: bool
+
+# For the Admin Create form
 class ProjectCreate(ProjectBase):
     challenge: str
     solution: str
     impact: str
     github_url: Optional[HttpUrl] = None
     live_url: Optional[HttpUrl] = None
+    is_featured: bool = False
+    is_draft: bool = True  # Default to draft for safety
     tag_ids: Optional[List[UUID]] = None
 
 class ProjectUpdate(BaseModel):
@@ -47,5 +52,4 @@ class ProjectUpdate(BaseModel):
     live_url: Optional[HttpUrl] = None
     is_featured: Optional[bool] = None
     is_draft: Optional[bool] = None
-    # We include tag_ids here so we can update the relationships
     tag_ids: Optional[List[UUID]] = None

@@ -4,6 +4,7 @@ type Schemas = components["schemas"];
 
 // --- Project Types ---
 export type ProjectSummary = Schemas["ProjectSummary"];
+export type ProjectAdminRead = Schemas["ProjectAdminRead"];
 export type ProjectDetail = Schemas["ProjectDetail"];
 export type ProjectCreate = Schemas["ProjectCreate"];
 export type ProjectUpdate = Schemas["ProjectUpdate"];

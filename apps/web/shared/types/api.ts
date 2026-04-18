@@ -55,6 +55,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify Admin Key
+         * @description If this code is reached, the Depends(AuthService.verify_admin)
+         *     has already passed.
+         */
+        post: operations["verify_admin_key_admin_verify_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/projects/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Projects */
+        get: operations["list_projects_admin_projects__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/projects": {
         parameters: {
             query?: never;
@@ -161,6 +199,46 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /** ProjectAdminRead */
+        ProjectAdminRead: {
+            /** Title */
+            title: string;
+            /** Slug */
+            slug: string;
+            /** Short Description */
+            short_description: string;
+            /** Thumbnail Url */
+            thumbnail_url?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Tags
+             * @default []
+             */
+            tags: components["schemas"]["TagRead"][];
+            /** Challenge */
+            challenge: string;
+            /** Solution */
+            solution: string;
+            /** Impact */
+            impact: string;
+            /** Github Url */
+            github_url?: string | null;
+            /** Live Url */
+            live_url?: string | null;
+            /** Is Featured */
+            is_featured: boolean;
+            /** Is Draft */
+            is_draft: boolean;
+        };
         /** ProjectCreate */
         ProjectCreate: {
             /** Title */
@@ -181,6 +259,16 @@ export interface components {
             github_url?: string | null;
             /** Live Url */
             live_url?: string | null;
+            /**
+             * Is Featured
+             * @default false
+             */
+            is_featured: boolean;
+            /**
+             * Is Draft
+             * @default true
+             */
+            is_draft: boolean;
             /** Tag Ids */
             tag_ids?: string[] | null;
         };
@@ -219,6 +307,8 @@ export interface components {
             github_url?: string | null;
             /** Live Url */
             live_url?: string | null;
+            /** Is Featured */
+            is_featured: boolean;
         };
         /** ProjectSummary */
         ProjectSummary: {
@@ -401,6 +491,59 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TagRead"][];
+                };
+            };
+        };
+    };
+    verify_admin_key_admin_verify_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    list_projects_admin_projects__get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+                search?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectAdminRead"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

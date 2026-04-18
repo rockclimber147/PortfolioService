@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../context/AdminAuthContext';
-import { AdminApiService, type ProjectSummary } from '@portfolio/shared';
+import { AdminApiService, type ProjectAdminRead } from '@portfolio/shared';
 
 export const Dashboard = () => {
   const { apiKey, logout } = useAuth();
-  const [projects, setProjects] = useState<ProjectSummary[]>([]);
+  const [projects, setProjects] = useState<ProjectAdminRead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,10 +75,10 @@ export const Dashboard = () => {
                       padding: '4px 8px', 
                       borderRadius: '4px', 
                       fontSize: '0.8rem',
-                    //   background: project.is_draft ? '#fff3cd' : '#d4edda',
-                    //   color: project.is_draft ? '#856404' : '#155724'
+                      background: project.is_draft ? '#fff3cd' : '#d4edda',
+                      color: project.is_draft ? '#856404' : '#155724'
                     }}>
-                      {/* {project.is_draft ? 'Draft' : 'Published'} */}
+                      {project.is_draft ? 'Draft' : 'Published'}
                     </span>
                   </td>
                   <td>
