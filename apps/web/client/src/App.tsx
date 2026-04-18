@@ -1,7 +1,10 @@
 import './App.css'
-import { SHARED_TEST_MESSAGE } from '@portfolio/shared';
+import { ProjectList } from './components/ProjectsList';
 
-function App() {
-  return <h1>{SHARED_TEST_MESSAGE}</h1>;
+export default function App() { 
+  return (
+    <div>
+      <ProjectList />
+    </div>
+  );
 }
-export default App

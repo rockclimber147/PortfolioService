@@ -1,0 +1,14 @@
+import { type components } from "./api";
+
+type Schemas = components["schemas"];
+
+// --- Project Types ---
+export type ProjectSummary = Schemas["ProjectSummary"];
+export type ProjectDetail = Schemas["ProjectDetail"];
+export type ProjectCreate = Schemas["ProjectCreate"];
+export type ProjectUpdate = Schemas["ProjectUpdate"];
+
+// --- Tag Types ---
+export type TagRead = Schemas["TagRead"];
+export type TagCreate = Schemas["TagCreate"];
+export type TagUpdate = Schemas["TagUpdate"];
