@@ -15,8 +15,8 @@ class Tag(SQLModel, table=True):
     __tablename__: Any = "tags"
     
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    name: str = Field(unique=True, index=True) # e.g., "C++"
-    slug: str = Field(unique=True, index=True) # e.g., "cpp"
+    name: str = Field(unique=True, index=True)
+    slug: str = Field(unique=True, index=True)
     
     # Relationship back to projects
     projects: List["Project"] = Relationship(back_populates="tags", link_model=ProjectTagLink)

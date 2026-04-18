@@ -12,7 +12,6 @@
           "Public Projects"
         ],
         "summary": "List Projects",
-        "description": "Returns a paginated list of project cards for the main gallery.",
         "operationId": "list_projects_projects__get",
         "parameters": [
           {
@@ -36,7 +35,7 @@
             }
           },
           {
-            "name": "tag",
+            "name": "search",
             "in": "query",
             "required": false,
             "schema": {
@@ -48,7 +47,7 @@
                   "type": "null"
                 }
               ],
-              "title": "Tag"
+              "title": "Search"
             }
           }
         ],
@@ -86,7 +85,6 @@
           "Public Projects"
         ],
         "summary": "Get Project Detail",
-        "description": "Returns the full details for a single project page.",
         "operationId": "get_project_detail_projects__slug__get",
         "parameters": [
           {
@@ -123,14 +121,39 @@
         }
       }
     },
-    "/admin/projects/": {
+    "/projects/tags": {
+      "get": {
+        "tags": [
+          "Public Projects"
+        ],
+        "summary": "List Tags",
+        "operationId": "list_tags_projects_tags_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TagRead"
+                  },
+                  "type": "array",
+                  "title": "Response List Tags Projects Tags Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/projects": {
       "post": {
         "tags": [
           "Admin CRUD"
         ],
         "summary": "Create Project",
-        "description": "Create a new project entry.",
-        "operationId": "create_project_admin_projects__post",
+        "description": "Creates a new project and links any provided tag IDs.",
+        "operationId": "create_project_admin_projects_post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -162,17 +185,27 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
       }
     },
     "/admin/projects/{project_id}": {
-      "put": {
+      "get": {
         "tags": [
           "Admin CRUD"
         ],
-        "summary": "Update Project",
-        "description": "Update an existing project's metadata or details.",
-        "operationId": "update_project_admin_projects__project_id__put",
+        "summary": "Get Project",
+        "description": "Fetches a single project by ID for editing.",
+        "operationId": "get_project_admin_projects__project_id__get",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
         "parameters": [
           {
             "name": "project_id",
@@ -180,6 +213,54 @@
             "required": true,
             "schema": {
               "type": "string",
+              "format": "uuid",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectDetail"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin CRUD"
+        ],
+        "summary": "Update Project",
+        "description": "Updates an existing project. \nOnly fields provided in the request body will be changed.",
+        "operationId": "update_project_admin_projects__project_id__patch",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
               "title": "Project Id"
             }
           }
@@ -189,7 +270,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectCreate"
+                "$ref": "#/components/schemas/ProjectUpdate"
               }
             }
           }
@@ -216,22 +297,131 @@
             }
           }
         }
+      }
+    },
+    "/admin/tags": {
+      "post": {
+        "tags": [
+          "Admin CRUD"
+        ],
+        "summary": "Create Tag",
+        "operationId": "create_tag_admin_tags_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/admin/tags/{tag_id}": {
+      "patch": {
+        "tags": [
+          "Admin CRUD"
+        ],
+        "summary": "Update Tag",
+        "operationId": "update_tag_admin_tags__tag_id__patch",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "tag_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Tag Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       },
       "delete": {
         "tags": [
           "Admin CRUD"
         ],
-        "summary": "Delete Project",
-        "description": "Remove a project from the database.",
-        "operationId": "delete_project_admin_projects__project_id__delete",
+        "summary": "Delete Tag",
+        "operationId": "delete_tag_admin_tags__tag_id__delete",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
         "parameters": [
           {
-            "name": "project_id",
+            "name": "tag_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Project Id"
+              "format": "uuid",
+              "title": "Tag Id"
             }
           }
         ],
@@ -351,6 +541,21 @@
               }
             ],
             "title": "Live Url"
+          },
+          "tag_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tag Ids"
           }
         },
         "type": "object",
@@ -401,6 +606,14 @@
             "type": "string",
             "format": "date-time",
             "title": "Created At"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagRead"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": []
           },
           "challenge": {
             "type": "string",
@@ -493,6 +706,14 @@
             "type": "string",
             "format": "date-time",
             "title": "Created At"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagRead"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": []
           }
         },
         "type": "object",
@@ -504,6 +725,227 @@
           "created_at"
         ],
         "title": "ProjectSummary"
+      },
+      "ProjectUpdate": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "short_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Description"
+          },
+          "challenge": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Challenge"
+          },
+          "solution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Solution"
+          },
+          "impact": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Impact"
+          },
+          "thumbnail_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thumbnail Url"
+          },
+          "github_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Github Url"
+          },
+          "live_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Live Url"
+          },
+          "is_featured": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Featured"
+          },
+          "is_draft": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Draft"
+          },
+          "tag_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tag Ids"
+          }
+        },
+        "type": "object",
+        "title": "ProjectUpdate"
+      },
+      "TagCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "slug"
+        ],
+        "title": "TagCreate"
+      },
+      "TagRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "slug",
+          "id"
+        ],
+        "title": "TagRead"
+      },
+      "TagUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          }
+        },
+        "type": "object",
+        "title": "TagUpdate"
       },
       "ValidationError": {
         "properties": {
@@ -544,6 +986,13 @@
           "type"
         ],
         "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
       }
     }
   }

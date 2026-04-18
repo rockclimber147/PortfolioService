@@ -7,6 +7,12 @@
   "scripts": {
     "dev:admin": "npm run dev -w apps/web/admin",
     "dev:client": "npm run dev -w apps/web/client",
-    "dev": "npm run dev:admin & npm run dev:client & wait"
+    "dev": "npm run dev:admin & npm run dev:client & wait",
+    "api:export": "python apps/api/export_openapi.py",
+    "shared:generate": "openapi-typescript apps/api/openapi.json --output apps/web/shared/types/api.ts",
+    "sync-types": "npm run api:export && npm run shared:generate"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.13.0"
   }
 }
