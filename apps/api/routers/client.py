@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 from database import get_session
 from models import Project
 from schemas import ProjectSummary, ProjectDetail
+from services.projects import ProjectService
 
 router = APIRouter(
     prefix="/projects",
@@ -21,44 +22,11 @@ async def list_projects(
     search: Optional[str] = None,
     session: AsyncSession = Depends(get_session)
 ):
-    # 1. Use .options(selectinload(Project.tags)) 
-    # This fetches projects AND their tags in one (or two optimized) async calls.
-    statement = (
-        select(Project)
-        .offset(skip)
-        .limit(limit)
-        .options(selectinload(cast(Any, Project.tags)))
-    )
-    
-    if search:
-        search_filter = f"%{search}%"
-        statement = statement.where(
-            or_(
-                col(Project.title).ilike(search_filter),
-                col(Project.short_description).ilike(search_filter)
-            )
-        )
-    
-    result = await session.execute(statement)
-    projects = result.scalars().all()
-    
-    return projects
+    return await ProjectService.list_projects(session, skip, limit, search)
 
 @router.get("/{slug}", response_model=ProjectDetail)
-async def get_project_detail(
-    slug: str, 
-    session: AsyncSession = Depends(get_session)
-):
-    """Returns the full details for a single project page by its unique slug."""
-    # Find the project where the slug matches
-    statement = select(Project).where(Project.slug == slug)
-    result = await session.execute(statement)
-    project = result.scalar_one_or_none()
-    
+async def get_project_detail(slug: str, session: AsyncSession = Depends(get_session)):
+    project = await ProjectService.get_by_slug(session, slug)
     if not project:
-        raise HTTPException(
-            status_code=404, 
-            detail=f"Project with slug '{slug}' not found"
-        )
-    
+        raise HTTPException(status_code=404, detail="Project not found")
     return project
