@@ -6,7 +6,7 @@ from database.database import get_session
 from schemas import ProfileRead, ProfileUpdate
 from services import ProfileService
 
-router = APIRouter(prefix="/profile", tags=["Admin Profile"])
+router = APIRouter()
 
 @router.get("/", response_model=ProfileRead)
 async def get_my_profile(session: AsyncSession = Depends(get_session)):

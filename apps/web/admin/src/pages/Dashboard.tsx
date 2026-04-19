@@ -63,6 +63,7 @@ export const Dashboard = () => {
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/projects/new')} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">+ Project</button>
             <button onClick={() => navigate('/tags/new')} className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">+ Tag</button>
+            <button onClick={() => navigate('/profile')} className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">Edit Profile</button>
             <button onClick={logout} className="ml-4 text-gray-400 hover:text-red-600 text-sm">Logout</button>
           </div>
         </div>

@@ -1,5 +1,9 @@
 import { ApiServiceBase } from "./base";
-import type { ProjectDetail, ProjectCreate, ProjectUpdate, ProjectAdminRead, TagCreate, TagRead, TagUpdate } from "../types";
+import type { 
+  ProjectDetail, ProjectCreate, ProjectUpdate, ProjectAdminRead, 
+  TagCreate, TagRead, TagUpdate,
+  ProfileRead, ProfileUpdate
+} from "../types";
 
 export class AdminApiService extends ApiServiceBase {
   private readonly apiKey: string;
@@ -102,5 +106,16 @@ export class AdminApiService extends ApiServiceBase {
     }
 
     return public_url;
+  }
+
+  async getProfile(): Promise<ProfileRead> {
+    return this.request<ProfileRead>("/admin/profile/");
+  }
+
+  async updateProfile(data: ProfileUpdate): Promise<ProfileRead> {
+    return this.request<ProfileRead>("/admin/profile/", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
   }
 }
