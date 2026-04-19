@@ -11,9 +11,9 @@ export const ProjectTable = ({ projects, onDelete }: ProjectTableProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+    <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-sm">
-        <thead className="bg-gray-50 uppercase text-gray-700 font-semibold italic text-xs">
+        <thead className="bg-gray-50 uppercase text-gray-700 font-semibold italic text-[10px] tracking-wider">
           <tr>
             <th className="px-6 py-4">Project</th>
             <th className="px-6 py-4">Status</th>
@@ -52,7 +52,7 @@ export const ProjectTable = ({ projects, onDelete }: ProjectTableProps) => {
               </td>
               <td className="px-6 py-4 text-right space-x-3">
                 <button 
-                  onClick={() => navigate(`/projects/edit/${project.id}`)}
+                  onClick={() => navigate(`/dashboard/projects/edit/${project.id}`)}
                   className="text-blue-600 hover:text-blue-900 font-medium transition-colors"
                 >
                   Edit

@@ -31,7 +31,7 @@ export const TagTable = ({ tags, onDelete }: TagTableProps) => {
               </td>
               <td className="px-6 py-4 text-right space-x-3">
                 <button 
-                  onClick={() => navigate(`/tags/edit/${tag.id}`)}
+                  onClick={() => navigate(`/dashboard/tags/edit/${tag.id}`)}
                   className="text-blue-600 hover:text-blue-900 font-medium transition-colors"
                 >
                   Edit
