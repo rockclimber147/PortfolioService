@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import engine
 from models import SQLModel, Project
 from routers import client, admin
+from routers.admin import admin_router
 from services.auth import AuthService
 from envconfig import EnvironmentConfig
 
@@ -41,7 +42,7 @@ app.add_middleware(
 
 app.include_router(client.router)
 app.include_router(
-    admin.router,
+    admin_router,
     prefix="/admin",
     dependencies=[Depends(AuthService.verify_admin)]
 )
