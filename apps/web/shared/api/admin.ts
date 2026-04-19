@@ -38,11 +38,6 @@ export class AdminApiService extends ApiServiceBase {
     });
   }
 
-  /**
-   * Updates an existing project.
-   * @param id The UUID of the project
-   * @param data ProjectUpdate DTO (partial fields)
-   */
   async updateProject(id: string, data: ProjectUpdate): Promise<ProjectDetail> {
     return this.request<ProjectDetail>(`/admin/projects/${id}`, {
       method: "PATCH",
@@ -50,9 +45,6 @@ export class AdminApiService extends ApiServiceBase {
     });
   }
 
-  /**
-   * Deletes a project by UUID.
-   */
   async deleteProject(id: string): Promise<void> {
     return this.request<void>(`/admin/projects/${id}`, {
       method: "DELETE",
@@ -60,8 +52,6 @@ export class AdminApiService extends ApiServiceBase {
   }
 
   async listProjects(): Promise<ProjectAdminRead[]> {
-    // Note: Ensure your FastAPI router has this endpoint mapped 
-    // to the logic that returns all projects.
     return this.request<ProjectAdminRead[]>("/admin/projects/");
   }
 

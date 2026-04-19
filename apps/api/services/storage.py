@@ -58,3 +58,15 @@ class StorageService:
         except ClientError as e:
             print(f"Error generating presigned URL: {e}")
             return None
+        
+    def delete_file(self, public_url: str):
+        """Extracts the key from the public URL and deletes it from S3."""
+        try:
+            # URL format: https://bucket.s3.region.amazonaws.com/projects/filename.jpg
+            object_key = public_url.split('/')[-2] + '/' + public_url.split('/')[-1]
+            
+            self.s3_client.delete_object(Bucket=self.bucket_name, Key=object_key)
+            return True
+        except Exception as e:
+            print(f"Delete failed: {e}")
+            return False

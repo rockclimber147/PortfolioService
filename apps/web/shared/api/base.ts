@@ -1,14 +1,10 @@
 export abstract class ApiServiceBase {
-protected readonly baseUrl: string;
+  protected readonly baseUrl: string;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
   }
 
-  /**
-   * Core request wrapper. 
-   * Handles response checking and JSON parsing.
-   */
   protected async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -24,11 +20,21 @@ protected readonly baseUrl: string;
     });
 
     if (!response.ok) {
-      // Try to get FastAPI's detail message
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.detail || `API Error: ${response.status}`);
     }
+    
+    if (response.status === 204) {
+      return null as T;
+    }
 
-    return response.json();
+    const text = await response.text();
+    try {
+      return text ? JSON.parse(text) : (null as T);
+    } catch (e) {
+      // Catch cases where status was 200/201 but body was malformed
+      console.error("Failed to parse JSON response:", text);
+      throw new Error("Invalid JSON response from server");
+    }
   }
 }
