@@ -2,7 +2,9 @@ from fastapi import FastAPI, Depends
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import engine
+from database.database import engine
+from database.db_init import initialize_singleton_profile
+from sqlmodel.ext.asyncio.session import AsyncSession
 from models import SQLModel, Project
 from routers import client, admin
 from routers.admin import admin_router
@@ -14,6 +16,8 @@ async def lifespan(app: FastAPI):
     print(f"Tables found in metadata: {SQLModel.metadata.tables.keys()}")
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
+    async with AsyncSession(engine) as session:
+        await initialize_singleton_profile(session)
     yield
     await engine.dispose()
 

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from typing import List
 
-from database import get_session
+from database.database import get_session
 from schemas import TagCreate, TagRead, TagUpdate
 from services import TagService
 

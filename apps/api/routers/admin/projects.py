@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from typing import List, Optional
 
-from database import get_session
+from database.database import get_session
 from schemas import ProjectCreate, ProjectDetail, ProjectUpdate, ProjectAdminRead
 from services import ProjectService, StorageService
 

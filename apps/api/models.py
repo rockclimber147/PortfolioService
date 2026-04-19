@@ -3,14 +3,12 @@ from uuid import UUID, uuid4
 from datetime import datetime
 from typing import Optional, Any, List
 
-# 1. The Link Table (No 'table=True' in the class definition, handled by SQLModel)
 class ProjectTagLink(SQLModel, table=True):
     __tablename__: Any = "project_tag_links"
     
     project_id: UUID = Field(foreign_key="projects.id", primary_key=True)
     tag_id: UUID = Field(foreign_key="tags.id", primary_key=True)
 
-# 2. The Tag Model
 class Tag(SQLModel, table=True):
     __tablename__: Any = "tags"
     
@@ -18,10 +16,8 @@ class Tag(SQLModel, table=True):
     name: str = Field(unique=True, index=True)
     slug: str = Field(unique=True, index=True)
     
-    # Relationship back to projects
     projects: List["Project"] = Relationship(back_populates="tags", link_model=ProjectTagLink)
 
-# 3. Your Updated Project Model
 class Project(SQLModel, table=True):
     __tablename__ : Any = "projects"
 
@@ -41,3 +37,14 @@ class Project(SQLModel, table=True):
 
     # Relationship to tags
     tags: List[Tag] = Relationship(back_populates="projects", link_model=ProjectTagLink)
+
+class Profile(SQLModel, table=True):
+    id: int = Field(default=1, primary_key=True) # Always ID 1
+    name: str
+    summary: str
+    long_summary: Optional[str] = None
+    profile_photo_url: Optional[str] = None
+    github_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    email: str
+    location: str = "Vancouver, BC"

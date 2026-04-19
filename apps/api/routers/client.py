@@ -6,7 +6,7 @@ from sqlmodel import or_, col
 from sqlalchemy.orm import selectinload
 
 from schemas import TagRead
-from database import get_session
+from database.database import get_session
 from models import Project
 from schemas import ProjectSummary, ProjectDetail
 from services import ProjectService, TagService
