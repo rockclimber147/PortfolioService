@@ -106,3 +106,21 @@ class ProjectService:
         
         # Re-fetch to ensure everything is fresh for the response
         return await ProjectService.get_by_id(session, project_id)
+    
+    @staticmethod
+    async def delete_project(session: AsyncSession, project_id: UUID) -> bool:
+        """
+        Deletes a project by ID. 
+        Returns True if deleted, False if not found.
+        """
+        # Fetch the existing project first
+        statement = select(Project).where(Project.id == project_id)
+        result = await session.execute(statement)
+        db_project = result.scalar_one_or_none()
+
+        if not db_project:
+            return False
+
+        await session.delete(db_project)
+        await session.commit()
+        return True

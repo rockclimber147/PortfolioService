@@ -70,6 +70,21 @@ async def update_project(
         
     return db_project
 
+@router.delete("/projects/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(
+    project_id: UUID,
+    session: AsyncSession = Depends(get_session)
+):
+    """Deletes a project from the database."""
+    success = await ProjectService.delete_project(session, project_id)
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Project not found or could not be deleted"
+        )
+    return None
+
 
 @router.post("/tags", response_model=TagRead, status_code=201)
 async def create_tag(tag_in: TagCreate, session: AsyncSession = Depends(get_session)):

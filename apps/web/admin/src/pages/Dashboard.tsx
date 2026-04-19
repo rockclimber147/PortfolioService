@@ -1,12 +1,23 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProjectAdminRead } from '@portfolio/shared';
+import { useNavigate } from 'react-router-dom';
 
 export const Dashboard = () => {
   const { apiKey, logout } = useAuth();
   const [projects, setProjects] = useState<ProjectAdminRead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const handleDelete = async (id: string) => {
+  if (!confirm("Are you sure? This will permanently remove the project from Supabase.")) return;
+    try {
+      await adminApi.deleteProject(id);
+      setProjects(projects.filter(p => p.id !== id)); // Optimistic UI update
+    } catch (err) {
+      alert("Delete failed: " + err);
+    }
+  };
 
   const adminApi = useMemo(() => 
     new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), 
@@ -33,14 +44,42 @@ export const Dashboard = () => {
   if (loading) return <div className="p-8">Syncing with AWS/Supabase...</div>;
 
   return (
-    <div className="admin-dashboard">
-      <header style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', borderBottom: '1px solid #ddd' }}>
+<div className="admin-dashboard">
+      <header style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        padding: '1rem', 
+        borderBottom: '1px solid #ddd' 
+      }}>
         <h1>Portfolio Admin</h1>
         <div>
-          <button onClick={() => {/* TODO: Navigate to Create Page */}} style={{ marginRight: '10px' }}>
+          {/* Navigate to the creation route */}
+          <button 
+            onClick={() => navigate('/projects/new')} 
+            style={{ 
+              marginRight: '10px',
+              padding: '8px 16px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
             + New Project
           </button>
-          <button onClick={logout} style={{ backgroundColor: '#ff4444', color: 'white' }}>
+          
+          <button 
+            onClick={logout} 
+            style={{ 
+              backgroundColor: '#ff4444', 
+              color: 'white',
+              padding: '8px 16px',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
             Logout
           </button>
         </div>
@@ -90,7 +129,13 @@ export const Dashboard = () => {
                   </td>
                   <td>{new Date(project.created_at).toLocaleDateString()}</td>
                   <td>
-                    <button onClick={() => {/* TODO: Edit Logic */}}>Edit</button>
+                    <button onClick={() => navigate(`/projects/edit/${project.id}`)}>Edit</button>
+                    <button 
+                        onClick={() => handleDelete(project.id)} 
+                        style={{ marginLeft: '8px', color: 'red' }}
+                    >
+                        Delete
+                    </button>
                   </td>
                 </tr>
               ))}
