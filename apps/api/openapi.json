@@ -146,35 +146,10 @@
         }
       }
     },
-    "/admin/verify": {
-      "post": {
-        "tags": [
-          "Admin CRUD"
-        ],
-        "summary": "Verify Admin Key",
-        "description": "If this code is reached, the Depends(AuthService.verify_admin) \nhas already passed.",
-        "operationId": "verify_admin_key_admin_verify_post",
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ]
-      }
-    },
     "/admin/projects/": {
       "get": {
         "tags": [
-          "Admin CRUD"
+          "Admin Projects"
         ],
         "summary": "List Projects",
         "operationId": "list_projects_admin_projects__get",
@@ -247,25 +222,27 @@
             }
           }
         }
-      }
-    },
-    "/admin/projects": {
+      },
       "post": {
         "tags": [
-          "Admin CRUD"
+          "Admin Projects"
         ],
         "summary": "Create Project",
-        "description": "Creates a new project and links any provided tag IDs.",
-        "operationId": "create_project_admin_projects_post",
+        "operationId": "create_project_admin_projects__post",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ProjectCreate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
@@ -288,21 +265,15 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "APIKeyHeader": []
-          }
-        ]
+        }
       }
     },
     "/admin/projects/{project_id}": {
       "get": {
         "tags": [
-          "Admin CRUD"
+          "Admin Projects"
         ],
         "summary": "Get Project",
-        "description": "Fetches a single project by ID for editing.",
         "operationId": "get_project_admin_projects__project_id__get",
         "security": [
           {
@@ -346,10 +317,9 @@
       },
       "patch": {
         "tags": [
-          "Admin CRUD"
+          "Admin Projects"
         ],
         "summary": "Update Project",
-        "description": "Updates an existing project. \nOnly fields provided in the request body will be changed.",
         "operationId": "update_project_admin_projects__project_id__patch",
         "security": [
           {
@@ -400,15 +370,82 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Admin Projects"
+        ],
+        "summary": "Delete Project",
+        "operationId": "delete_project_admin_projects__project_id__delete",
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/admin/tags": {
+    "/admin/tags/": {
+      "get": {
+        "tags": [
+          "Admin Tags"
+        ],
+        "summary": "List Tags",
+        "operationId": "list_tags_admin_tags__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TagRead"
+                  },
+                  "type": "array",
+                  "title": "Response List Tags Admin Tags  Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      },
       "post": {
         "tags": [
-          "Admin CRUD"
+          "Admin Tags"
         ],
         "summary": "Create Tag",
-        "operationId": "create_tag_admin_tags_post",
+        "operationId": "create_tag_admin_tags__post",
         "requestBody": {
           "content": {
             "application/json": {
@@ -451,7 +488,7 @@
     "/admin/tags/{tag_id}": {
       "patch": {
         "tags": [
-          "Admin CRUD"
+          "Admin Tags"
         ],
         "summary": "Update Tag",
         "operationId": "update_tag_admin_tags__tag_id__patch",
@@ -507,7 +544,7 @@
       },
       "delete": {
         "tags": [
-          "Admin CRUD"
+          "Admin Tags"
         ],
         "summary": "Delete Tag",
         "operationId": "delete_tag_admin_tags__tag_id__delete",
@@ -545,6 +582,125 @@
         }
       }
     },
+    "/admin/assets/upload-url": {
+      "post": {
+        "tags": [
+          "Admin Assets"
+        ],
+        "summary": "Get Upload Url",
+        "description": "Generates a pre-signed S3 URL for direct-to-bucket uploads.",
+        "operationId": "get_upload_url_admin_assets_upload_url_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
+    "/admin/profile/profile/": {
+      "get": {
+        "tags": [
+          "Admin Profile",
+          "Admin Profile"
+        ],
+        "summary": "Get My Profile",
+        "description": "Fetches the singleton profile record.\nIf it doesn't exist yet, returns a 404 or a default state.",
+        "operationId": "get_my_profile_admin_profile_profile__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileRead"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Admin Profile",
+          "Admin Profile"
+        ],
+        "summary": "Update My Profile",
+        "description": "Updates the singleton profile. \nCreates it if it doesn't exist (ID 1).",
+        "operationId": "update_my_profile_admin_profile_profile__patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "APIKeyHeader": []
+          }
+        ]
+      }
+    },
     "/": {
       "get": {
         "summary": "Read Root",
@@ -576,6 +732,197 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "ProfileRead": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "long_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Summary"
+          },
+          "profile_photo_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Photo Url"
+          },
+          "github_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Github Url"
+          },
+          "linkedin_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linkedin Url"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "location": {
+            "type": "string",
+            "title": "Location",
+            "default": "Vancouver, BC"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "summary",
+          "email",
+          "id"
+        ],
+        "title": "ProfileRead"
+      },
+      "ProfileUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "long_summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Long Summary"
+          },
+          "profile_photo_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile Photo Url"
+          },
+          "github_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Github Url"
+          },
+          "linkedin_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2083,
+                "minLength": 1,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linkedin Url"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          }
+        },
+        "type": "object",
+        "title": "ProfileUpdate"
       },
       "ProjectAdminRead": {
         "properties": {
@@ -1174,6 +1521,24 @@
         },
         "type": "object",
         "title": "TagUpdate"
+      },
+      "UploadRequest": {
+        "properties": {
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_name",
+          "content_type"
+        ],
+        "title": "UploadRequest"
       },
       "ValidationError": {
         "properties": {

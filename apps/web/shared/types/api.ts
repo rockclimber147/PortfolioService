@@ -55,27 +55,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Verify Admin Key
-         * @description If this code is reached, the Depends(AuthService.verify_admin)
-         *     has already passed.
-         */
-        post: operations["verify_admin_key_admin_verify_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/admin/projects/": {
         parameters: {
             query?: never;
@@ -86,27 +65,8 @@ export interface paths {
         /** List Projects */
         get: operations["list_projects_admin_projects__get"];
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/projects": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create Project
-         * @description Creates a new project and links any provided tag IDs.
-         */
-        post: operations["create_project_admin_projects_post"];
+        /** Create Project */
+        post: operations["create_project_admin_projects__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -120,35 +80,30 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get Project
-         * @description Fetches a single project by ID for editing.
-         */
+        /** Get Project */
         get: operations["get_project_admin_projects__project_id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Delete Project */
+        delete: operations["delete_project_admin_projects__project_id__delete"];
         options?: never;
         head?: never;
-        /**
-         * Update Project
-         * @description Updates an existing project.
-         *     Only fields provided in the request body will be changed.
-         */
+        /** Update Project */
         patch: operations["update_project_admin_projects__project_id__patch"];
         trace?: never;
     };
-    "/admin/tags": {
+    "/admin/tags/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List Tags */
+        get: operations["list_tags_admin_tags__get"];
         put?: never;
         /** Create Tag */
-        post: operations["create_tag_admin_tags_post"];
+        post: operations["create_tag_admin_tags__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -171,6 +126,52 @@ export interface paths {
         head?: never;
         /** Update Tag */
         patch: operations["update_tag_admin_tags__tag_id__patch"];
+        trace?: never;
+    };
+    "/admin/assets/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get Upload Url
+         * @description Generates a pre-signed S3 URL for direct-to-bucket uploads.
+         */
+        post: operations["get_upload_url_admin_assets_upload_url_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/profile/profile/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get My Profile
+         * @description Fetches the singleton profile record.
+         *     If it doesn't exist yet, returns a 404 or a default state.
+         */
+        get: operations["get_my_profile_admin_profile_profile__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update My Profile
+         * @description Updates the singleton profile.
+         *     Creates it if it doesn't exist (ID 1).
+         */
+        patch: operations["update_my_profile_admin_profile_profile__patch"];
         trace?: never;
     };
     "/": {
@@ -198,6 +199,52 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** ProfileRead */
+        ProfileRead: {
+            /** Name */
+            name: string;
+            /** Summary */
+            summary: string;
+            /** Long Summary */
+            long_summary?: string | null;
+            /** Profile Photo Url */
+            profile_photo_url?: string | null;
+            /** Github Url */
+            github_url?: string | null;
+            /** Linkedin Url */
+            linkedin_url?: string | null;
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /**
+             * Location
+             * @default Vancouver, BC
+             */
+            location: string;
+            /** Id */
+            id: number;
+        };
+        /** ProfileUpdate */
+        ProfileUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Summary */
+            summary?: string | null;
+            /** Long Summary */
+            long_summary?: string | null;
+            /** Profile Photo Url */
+            profile_photo_url?: string | null;
+            /** Github Url */
+            github_url?: string | null;
+            /** Linkedin Url */
+            linkedin_url?: string | null;
+            /** Email */
+            email?: string | null;
+            /** Location */
+            location?: string | null;
         };
         /** ProjectAdminRead */
         ProjectAdminRead: {
@@ -389,6 +436,13 @@ export interface components {
             /** Slug */
             slug?: string | null;
         };
+        /** UploadRequest */
+        UploadRequest: {
+            /** File Name */
+            file_name: string;
+            /** Content Type */
+            content_type: string;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -495,26 +549,6 @@ export interface operations {
             };
         };
     };
-    verify_admin_key_admin_verify_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
     list_projects_admin_projects__get: {
         parameters: {
             query?: {
@@ -548,7 +582,7 @@ export interface operations {
             };
         };
     };
-    create_project_admin_projects_post: {
+    create_project_admin_projects__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -612,6 +646,35 @@ export interface operations {
             };
         };
     };
+    delete_project_admin_projects__project_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     update_project_admin_projects__project_id__patch: {
         parameters: {
             query?: never;
@@ -647,7 +710,27 @@ export interface operations {
             };
         };
     };
-    create_tag_admin_tags_post: {
+    list_tags_admin_tags__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagRead"][];
+                };
+            };
+        };
+    };
+    create_tag_admin_tags__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -731,6 +814,92 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TagRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_upload_url_admin_assets_upload_url_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_profile_admin_profile_profile__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileRead"];
+                };
+            };
+        };
+    };
+    update_my_profile_admin_profile_profile__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfileUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileRead"];
                 };
             };
             /** @description Validation Error */

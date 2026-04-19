@@ -13,3 +13,7 @@ export type ProjectUpdate = Schemas["ProjectUpdate"];
 export type TagRead = Schemas["TagRead"];
 export type TagCreate = Schemas["TagCreate"];
 export type TagUpdate = Schemas["TagUpdate"];
+
+// --- Profile Types ---
+export type ProfileRead = Schemas["ProfileRead"]
+export type ProfileUpdate = Schemas["ProfileUpdate"]
