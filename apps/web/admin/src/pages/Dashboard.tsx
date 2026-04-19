@@ -1,7 +1,9 @@
+// apps/web/admin/pages/Dashboard.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProjectAdminRead } from '@portfolio/shared';
 import { useNavigate } from 'react-router-dom';
+import { ProjectTable } from '../components/ProjectTable';
 
 export const Dashboard = () => {
   const { apiKey, logout } = useAuth();
@@ -9,15 +11,6 @@ export const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const handleDelete = async (id: string) => {
-  if (!confirm("Are you sure? This will permanently remove the project from Supabase.")) return;
-    try {
-      await adminApi.deleteProject(id);
-      setProjects(projects.filter(p => p.id !== id)); // Optimistic UI update
-    } catch (err) {
-      alert("Delete failed: " + err);
-    }
-  };
 
   const adminApi = useMemo(() => 
     new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), 
@@ -28,7 +21,6 @@ export const Dashboard = () => {
     const loadDashboard = async () => {
       try {
         setLoading(true);
-        // On the admin side, we want to see everything
         const data = await adminApi.listProjects(); 
         setProjects(data);
       } catch (err) {
@@ -37,110 +29,63 @@ export const Dashboard = () => {
         setLoading(false);
       }
     };
-
     loadDashboard();
   }, [adminApi]);
 
-  if (loading) return <div className="p-8">Syncing with AWS/Supabase...</div>;
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure? This will permanently remove the project from Supabase.")) return;
+    try {
+      await adminApi.deleteProject(id);
+      setProjects(projects.filter(p => p.id !== id));
+    } catch (err) {
+      alert("Delete failed: " + err);
+    }
+  };
+
+  if (loading) return (
+    <div className="flex h-screen items-center justify-center bg-gray-50 text-gray-500 italic">
+      Syncing with AWS/Supabase...
+    </div>
+  );
 
   return (
-<div className="admin-dashboard">
-      <header style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        padding: '1rem', 
-        borderBottom: '1px solid #ddd' 
-      }}>
-        <h1>Portfolio Admin</h1>
-        <div>
-          {/* Navigate to the creation route */}
-          <button 
-            onClick={() => navigate('/projects/new')} 
-            style={{ 
-              marginRight: '10px',
-              padding: '8px 16px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            + New Project
-          </button>
-          
-          <button 
-            onClick={logout} 
-            style={{ 
-              backgroundColor: '#ff4444', 
-              color: 'white',
-              padding: '8px 16px',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Logout
-          </button>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-gray-900 tracking-tight">Portfolio Admin</h1>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => navigate('/projects/new')} 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-all text-sm"
+            >
+              + New Project
+            </button>
+            <button 
+              onClick={logout} 
+              className="text-gray-500 hover:text-red-600 font-medium text-sm transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
-      <main style={{ padding: '2rem' }}>
-        {error && <div style={{ color: 'red', marginBottom: '1rem' }}>⚠️ {error}</div>}
+      <main className="max-w-7xl mx-auto px-4 py-10">
+        {error && (
+          <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded text-red-700 text-sm">
+            ⚠️ {error}
+          </div>
+        )}
 
-        <section>
-          <h2>Project Management</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
-            <thead>
-              <tr style={{ textAlign: 'left', borderBottom: '2px solid #eee' }}>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Tags</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {projects.map((project) => (
-                <tr key={project.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '12px 0' }}>
-                    <strong>{project.title}</strong>
-                    <br />
-                    <small style={{ color: '#666' }}>/{project.slug}</small>
-                  </td>
-                  <td>
-                    {/* Visual indicator for Draft vs Published */}
-                    <span style={{ 
-                      padding: '4px 8px', 
-                      borderRadius: '4px', 
-                      fontSize: '0.8rem',
-                      background: project.is_draft ? '#fff3cd' : '#d4edda',
-                      color: project.is_draft ? '#856404' : '#155724'
-                    }}>
-                      {project.is_draft ? 'Draft' : 'Published'}
-                    </span>
-                  </td>
-                  <td>
-                    {project.tags.map(t => (
-                      <span key={t.id} style={{ marginRight: '4px', fontSize: '0.75rem', opacity: 0.7 }}>
-                        #{t.name}
-                      </span>
-                    ))}
-                  </td>
-                  <td>{new Date(project.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <button onClick={() => navigate(`/projects/edit/${project.id}`)}>Edit</button>
-                    <button 
-                        onClick={() => handleDelete(project.id)} 
-                        style={{ marginLeft: '8px', color: 'red' }}
-                    >
-                        Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <section className="space-y-6">
+          <div className="flex justify-between items-end">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Project Management</h2>
+              <p className="text-gray-500 text-sm">Full CRUD control over your portfolio items.</p>
+            </div>
+          </div>
+          
+          <ProjectTable projects={projects} onDelete={handleDelete} />
         </section>
       </main>
     </div>
