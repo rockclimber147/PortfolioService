@@ -9,7 +9,9 @@ export const ProjectFormPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { apiKey } = useAuth();
-  
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [, setIsSaving] = useState(false);
+
   const [formData, setFormData] = useState<Partial<ProjectCreate>>({
     title: '', slug: '', short_description: '', challenge: '', 
     solution: '', impact: '', is_draft: true, is_featured: false, tag_ids: [], thumbnail_url: ''
@@ -32,16 +34,30 @@ export const ProjectFormPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
+
     try {
-      if (id) {
-        await adminApi.updateProject(id, formData as ProjectUpdate);
-      } else {
-        await adminApi.createProject(formData as ProjectCreate);
+      let finalFormData = { ...formData };
+
+      // 1. If there's a new file selected, upload it first
+      if (pendingFile) {
+        const uploadedUrl = await adminApi.uploadImage(pendingFile);
+        finalFormData.thumbnail_url = uploadedUrl;
       }
+
+      // 2. Send the data to FastAPI
+      if (id) {
+        await adminApi.updateProject(id, finalFormData as ProjectUpdate);
+      } else {
+        await adminApi.createProject(finalFormData as ProjectCreate);
+      }
+
       navigate('/dashboard');
     } catch (err) {
       console.error(err);
       alert("Save failed. Check console for details.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -144,7 +160,8 @@ export const ProjectFormPage = () => {
             <ThumbnailUpload 
               value={formData.thumbnail_url ?? undefined}
               labelClass={labelClass}
-              onChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
+              onFileSelect={(file) => setPendingFile(file)}
+              onClearExisting={() => setFormData(prev => ({ ...prev, thumbnail_url: '' }))}
             />
 
             <div>
