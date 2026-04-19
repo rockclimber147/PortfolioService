@@ -1,9 +1,1 @@
 @import "tailwindcss";
-
-/* Direct Tailwind to scan your shared folder for classes used in shared components */
-@source "../../shared/src/**/*.{ts,tsx}";
-
-@theme {
-  /* You can define shared brand colors here */
-  --color-brand-primary: #007bff;
-}
