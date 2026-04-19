@@ -1,5 +1,5 @@
 import { ApiServiceBase } from "./base";
-import type { ProjectDetail, ProjectCreate, ProjectUpdate, ProjectAdminRead } from "../types";
+import type { ProjectDetail, ProjectCreate, ProjectUpdate, ProjectAdminRead, TagCreate, TagRead, TagUpdate } from "../types";
 
 export class AdminApiService extends ApiServiceBase {
   private readonly apiKey: string;
@@ -63,5 +63,27 @@ export class AdminApiService extends ApiServiceBase {
     // Note: Ensure your FastAPI router has this endpoint mapped 
     // to the logic that returns all projects.
     return this.request<ProjectAdminRead[]>("/admin/projects/");
+  }
+
+  async listTags(): Promise<TagRead[]> {
+    return this.request<TagRead[]>("/admin/tags");
+  }
+
+  async createTag(data: TagCreate): Promise<TagRead> {
+    return this.request<TagRead>("/admin/tags", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateTag(id: string, data: TagUpdate): Promise<TagRead> {
+    return this.request<TagRead>(`/admin/tags/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteTag(id: string): Promise<void> {
+    return this.request<void>(`/admin/tags/${id}`, { method: "DELETE" });
   }
 }

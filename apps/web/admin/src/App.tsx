@@ -5,6 +5,7 @@ import { Dashboard } from './pages/Dashboard';
 import { ProjectFormPage } from './pages/ProjectFormPage'; // Import the new component
 import './App.css';
 import type { JSX } from 'react';
+import { TagFormPage } from './pages/TagFormPage';
 
 export default function App() {
   const { apiKey } = useAuth();
@@ -40,6 +41,9 @@ export default function App() {
           path="/projects/edit/:id" 
           element={<ProtectedRoute><ProjectFormPage /></ProtectedRoute>} 
         />
+
+        <Route path="/tags/new" element={<ProtectedRoute><TagFormPage /></ProtectedRoute>} />
+        <Route path="/tags/edit/:id" element={<ProtectedRoute><TagFormPage /></ProtectedRoute>} />
 
         {/* Optional: Catch-all redirect to / */}
         <Route path="*" element={<Navigate to="/" />} />

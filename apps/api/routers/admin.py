@@ -103,3 +103,10 @@ async def delete_tag(tag_id: UUID, session: AsyncSession = Depends(get_session))
     if not success:
         raise HTTPException(status_code=404, detail="Tag not found")
     return None
+
+@router.get("/tags", response_model=List[TagRead])
+async def list_tags(session: AsyncSession = Depends(get_session)):
+    """
+    Lists all tags for the admin dashboard.
+    """
+    return await TagService.list_tags(session)
