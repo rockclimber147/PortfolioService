@@ -16,7 +16,10 @@ class StorageService:
         self.s3_client = boto3.client(
             's3',
             region_name=self.region,
-            config=Config(signature_version='s3v4')
+            config=Config(
+                    signature_version='s3v4',
+                    s3={'addressing_style': 'virtual'}
+                )
         )
 
     def generate_presigned_upload_url(

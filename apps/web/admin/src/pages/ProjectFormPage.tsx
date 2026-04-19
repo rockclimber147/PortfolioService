@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProjectCreate, type ProjectUpdate } from '@portfolio/shared';
 import { TagSelector } from '../components/TagSelector';
+import { ThumbnailUpload } from '../components/ThumbnailUpload';
 
 export const ProjectFormPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,7 +12,7 @@ export const ProjectFormPage = () => {
   
   const [formData, setFormData] = useState<Partial<ProjectCreate>>({
     title: '', slug: '', short_description: '', challenge: '', 
-    solution: '', impact: '', is_draft: true, is_featured: false, tag_ids: []
+    solution: '', impact: '', is_draft: true, is_featured: false, tag_ids: [], thumbnail_url: ''
   });
 
   const adminApi = useMemo(() => 
@@ -140,6 +141,21 @@ export const ProjectFormPage = () => {
 
           {/* Sidebar Column */}
           <div className="space-y-6">
+            <ThumbnailUpload 
+              value={formData.thumbnail_url ?? undefined}
+              labelClass={labelClass}
+              onChange={(url) => setFormData({ ...formData, thumbnail_url: url })}
+            />
+
+            <div>
+                <label className={labelClass}>URL Slug</label>
+                <input 
+                className={`${inputClass} font-mono text-xs`}
+                value={formData.slug} 
+                onChange={e => setFormData({...formData, slug: e.target.value})} 
+                required 
+                />
+            </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
               <div>
                 <label className={labelClass}>URL Slug</label>

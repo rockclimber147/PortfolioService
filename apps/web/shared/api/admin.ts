@@ -86,4 +86,31 @@ export class AdminApiService extends ApiServiceBase {
   async deleteTag(id: string): Promise<void> {
     return this.request<void>(`/admin/tags/${id}`, { method: "DELETE" });
   }
+
+  async uploadImage(file: File): Promise<string> {
+    const { upload_url, public_url } = await this.request<{
+      upload_url: string;
+      public_url: string;
+    }>("/admin/assets/upload-url", {
+      method: "POST",
+      body: JSON.stringify({
+        file_name: file.name,
+        content_type: file.type,
+      }),
+    });
+
+    const s3Response = await fetch(upload_url, {
+      method: "PUT",
+      body: file,
+      headers: {
+        "Content-Type": file.type, // Must match exactly what was sent to FastAPI
+      },
+    });
+
+    if (!s3Response.ok) {
+      throw new Error(`S3 Upload failed: ${s3Response.statusText}`);
+    }
+
+    return public_url;
+  }
 }
