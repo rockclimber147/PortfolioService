@@ -2,13 +2,18 @@ import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProfileUpdate } from '@portfolio/shared';
+import { ImageUpload } from '../components/ImageUpload';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
   const { apiKey } = useAuth();
+  
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<ProfileUpdate>>({});
+  
+  // State for the image file that hasn't been uploaded yet
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   const adminApi = useMemo(() => 
     new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
@@ -24,11 +29,25 @@ export const ProfilePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+    
     try {
-      await adminApi.updateProfile(formData as ProfileUpdate);
+      let finalData = { ...formData };
+
+      // 1. Only upload to S3 if a new file was selected in the component
+      if (pendingFile) {
+        const uploadedUrl = await adminApi.uploadImage(pendingFile);
+        finalData.profile_photo_url = uploadedUrl;
+      }
+
+      // 2. Update the profile record in the database
+      await adminApi.updateProfile(finalData as ProfileUpdate);
+      
+      // 3. Clear pending file state now that it's saved
+      setPendingFile(null);
       alert("Profile updated successfully!");
     } catch (err) {
-      alert("Update failed: " + err);
+      console.error(err);
+      alert("Update failed. Check console for details.");
     } finally {
       setIsSaving(false);
     }
@@ -44,13 +63,15 @@ export const ProfilePage = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10 px-4 py-4">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/dashboard')} className="text-gray-400 hover:text-gray-600">← Back</button>
+            <button onClick={() => navigate('/dashboard')} className="text-gray-400 hover:text-gray-600">
+              ← Back
+            </button>
             <h1 className="text-xl font-bold text-gray-900">Profile Settings</h1>
           </div>
           <button 
             onClick={handleSubmit}
             disabled={isSaving}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm disabled:opacity-50"
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm disabled:opacity-50 transition-colors"
           >
             {isSaving ? 'Saving...' : 'Save Profile'}
           </button>
@@ -58,81 +79,85 @@ export const ProfilePage = () => {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 mt-8">
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-8 rounded-xl border border-gray-200 shadow-sm">
+        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl border border-gray-200 shadow-sm space-y-8">
           
-          <div className="md:col-span-2">
-            <label className={labelClass}>Full Name</label>
-            <input 
-              className={inputClass} 
-              value={formData.name || ''} 
-              onChange={e => setFormData({...formData, name: e.target.value})} 
+          {/* Circular Image Upload Section */}
+          <section className="flex justify-center border-b border-gray-100 pb-8">
+            <ImageUpload 
+              label="Profile Photo"
+              isCircular={true}
+              value={formData.profile_photo_url ?? undefined}
+              labelClass={labelClass}
+              onFileSelect={(file) => setPendingFile(file)}
+              onClearExisting={() => setFormData({ ...formData, profile_photo_url: '' })}
             />
-          </div>
+          </section>
 
-          <div className="md:col-span-2">
-            <label className={labelClass}>Short Summary</label>
-            <input 
-              className={inputClass} 
-              value={formData.summary || ''} 
-              onChange={e => setFormData({...formData, summary: e.target.value})} 
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className={labelClass}>Full Name</label>
+              <input 
+                className={inputClass} 
+                value={formData.name || ''} 
+                onChange={e => setFormData({...formData, name: e.target.value})} 
+              />
+            </div>
 
-          <div className="md:col-span-2">
-            <label className={labelClass}>Long Summary (Markdown/About Me)</label>
-            <textarea 
-              rows={6}
-              className={inputClass} 
-              value={formData.long_summary || ''} 
-              onChange={e => setFormData({...formData, long_summary: e.target.value})} 
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className={labelClass}>Short Summary</label>
+              <input 
+                className={inputClass} 
+                value={formData.summary || ''} 
+                onChange={e => setFormData({...formData, summary: e.target.value})} 
+              />
+            </div>
 
-          <div>
-            <label className={labelClass}>Email Address</label>
-            <input 
-              type="email"
-              className={inputClass} 
-              value={formData.email || ''} 
-              onChange={e => setFormData({...formData, email: e.target.value})} 
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className={labelClass}>Long Summary (Markdown/About Me)</label>
+              <textarea 
+                rows={6}
+                className={inputClass} 
+                value={formData.long_summary || ''} 
+                onChange={e => setFormData({...formData, long_summary: e.target.value})} 
+              />
+            </div>
 
-          <div>
-            <label className={labelClass}>Location</label>
-            <input 
-              className={inputClass} 
-              value={formData.location || ''} 
-              onChange={e => setFormData({...formData, location: e.target.value})} 
-            />
-          </div>
+            <div>
+              <label className={labelClass}>Email Address</label>
+              <input 
+                type="email"
+                className={inputClass} 
+                value={formData.email || ''} 
+                onChange={e => setFormData({...formData, email: e.target.value})} 
+              />
+            </div>
 
-          <div>
-            <label className={labelClass}>GitHub URL</label>
-            <input 
-              className={`${inputClass} font-mono text-xs`}
-              value={formData.github_url || ''} 
-              onChange={e => setFormData({...formData, github_url: e.target.value})} 
-            />
-          </div>
+            <div>
+              <label className={labelClass}>Location</label>
+              <input 
+                className={inputClass} 
+                value={formData.location || ''} 
+                onChange={e => setFormData({...formData, location: e.target.value})} 
+              />
+            </div>
 
-          <div>
-            <label className={labelClass}>LinkedIn URL</label>
-            <input 
-              className={`${inputClass} font-mono text-xs`}
-              value={formData.linkedin_url || ''} 
-              onChange={e => setFormData({...formData, linkedin_url: e.target.value})} 
-            />
-          </div>
+            <div>
+              <label className={labelClass}>GitHub URL</label>
+              <input 
+                className={`${inputClass} font-mono text-xs`}
+                value={formData.github_url || ''} 
+                onChange={e => setFormData({...formData, github_url: e.target.value})} 
+              />
+            </div>
 
-          <div className="md:col-span-2">
-            <label className={labelClass}>Profile Photo URL</label>
-            <input 
-              className={`${inputClass} font-mono text-xs`}
-              placeholder="https://supabase-url.com/bucket/me.jpg"
-              value={formData.profile_photo_url || ''} 
-              onChange={e => setFormData({...formData, profile_photo_url: e.target.value})} 
-            />
+            <div>
+              <label className={labelClass}>LinkedIn URL</label>
+              <input 
+                className={`${inputClass} font-mono text-xs`}
+                value={formData.linkedin_url || ''} 
+                onChange={e => setFormData({...formData, linkedin_url: e.target.value})} 
+              />
+            </div>
           </div>
         </form>
       </main>

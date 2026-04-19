@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProjectCreate, type ProjectUpdate } from '@portfolio/shared';
 import { TagSelector } from '../components/TagSelector';
-import { ThumbnailUpload } from '../components/ThumbnailUpload';
+import { ImageUpload } from '../components/ImageUpload';
 
 export const ProjectFormPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -157,11 +157,12 @@ export const ProjectFormPage = () => {
 
           {/* Sidebar Column */}
           <div className="space-y-6">
-            <ThumbnailUpload 
+            <ImageUpload 
+              label="Project Thumbnail"
               value={formData.thumbnail_url ?? undefined}
               labelClass={labelClass}
               onFileSelect={(file) => setPendingFile(file)}
-              onClearExisting={() => setFormData(prev => ({ ...prev, thumbnail_url: '' }))}
+              onClearExisting={() => setFormData({ ...formData, thumbnail_url: '' })}
             />
 
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
