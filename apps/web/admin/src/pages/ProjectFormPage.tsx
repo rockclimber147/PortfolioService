@@ -164,15 +164,6 @@ export const ProjectFormPage = () => {
               onClearExisting={() => setFormData(prev => ({ ...prev, thumbnail_url: '' }))}
             />
 
-            <div>
-                <label className={labelClass}>URL Slug</label>
-                <input 
-                className={`${inputClass} font-mono text-xs`}
-                value={formData.slug} 
-                onChange={e => setFormData({...formData, slug: e.target.value})} 
-                required 
-                />
-            </div>
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
               <div>
                 <label className={labelClass}>URL Slug</label>
