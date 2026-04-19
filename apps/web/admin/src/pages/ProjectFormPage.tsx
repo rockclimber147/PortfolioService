@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProjectCreate, type ProjectUpdate } from '@portfolio/shared';
+import { TagSelector } from '../components/TagSelector';
 
 export const ProjectFormPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -174,14 +175,18 @@ export const ProjectFormPage = () => {
               </div>
 
               <div className="pt-4 border-t border-gray-100">
-                 <label className={labelClass}>Tags</label>
-                 <div className="text-xs text-gray-400 italic">
-                   Tag selection system coming soon...
-                 </div>
-              </div>
+                <label className={labelClass}>Tags</label>
+                
+                {/* The component goes here */}
+                <TagSelector 
+                    adminApi={adminApi}
+                    selectedTagIds={formData.tag_ids || []}
+                    onChange={(newIds) => setFormData({ ...formData, tag_ids: newIds })}
+                />
+                
+                </div>
             </div>
           </div>
-
         </form>
       </main>
     </div>

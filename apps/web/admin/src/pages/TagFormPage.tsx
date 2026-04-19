@@ -2,7 +2,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
-import { AdminApiService, type TagCreate, type TagUpdate } from '@portfolio/shared';
+import { AdminApiService } from '@portfolio/shared';
 
 // apps/web/admin/pages/TagFormPage.tsx
 export const TagFormPage = () => {
