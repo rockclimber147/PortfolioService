@@ -82,3 +82,14 @@ class ExperienceService:
         await session.delete(db_exp)
         await session.commit()
         return True
+    
+    @staticmethod
+    async def get_public(session: AsyncSession) -> List[WorkExperience]:
+        statement = (
+            select(WorkExperience)
+            .where(col(WorkExperience.is_draft) == False) # Standardized check
+            .options(selectinload(cast(Any, WorkExperience.tags)))
+            .order_by(col(WorkExperience.start_date).desc())
+        )
+        result = await session.execute(statement)
+        return list(result.scalars().all())

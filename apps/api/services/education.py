@@ -53,3 +53,13 @@ class EducationService:
         await session.delete(db_edu)
         await session.commit()
         return True
+    
+    @staticmethod
+    async def get_public(session: AsyncSession) -> List[Education]:
+        statement = (
+            select(Education)
+            .where(col(Education.is_draft) == False)
+            .order_by(col(Education.created_at).desc())
+        )
+        result = await session.execute(statement)
+        return list(result.scalars().all())

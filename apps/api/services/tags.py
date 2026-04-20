@@ -56,3 +56,14 @@ class TagService:
         await session.delete(db_tag)
         await session.commit()
         return True
+    
+    @staticmethod
+    async def get_public(session: AsyncSession) -> List[Tag]:
+        statement = (
+            select(Tag)
+            .where(col(Tag.is_draft) == False)
+            .order_by(col(Tag.name).asc())
+        )
+        
+        result = await session.execute(statement)
+        return list(result.scalars().all())

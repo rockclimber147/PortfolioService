@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
 from uuid import UUID
-from .tags import TagRead
+from .tags import TagRead, TagPublicRead
 
 class ExperienceBase(BaseModel):
     company: str
@@ -36,3 +36,16 @@ class ExperienceRead(ExperienceBase):
     id: UUID
     created_at: datetime
     tags: List[TagRead] = []
+
+class ExperiencePublicRead(BaseModel):
+    id: UUID
+    company: str
+    role: str
+    location: Optional[str]
+    start_date: datetime
+    end_date: Optional[datetime]
+    is_current: bool
+    description: str
+    long_description: str
+    company_url: Optional[str]
+    tags: List[TagPublicRead] = []

@@ -26,3 +26,13 @@ class ProfileUpdate(BaseModel):
     email: Optional[EmailStr] = None
     location: Optional[str] = None
     is_draft: Optional[bool] = None
+
+class ProfilePublicRead(BaseModel):
+    name: str
+    summary: str
+    long_summary: Optional[str]
+    profile_photo_url: Optional[str]
+    github_url: Optional[str]
+    linkedin_url: Optional[str]
+    location: str
+    email: EmailStr

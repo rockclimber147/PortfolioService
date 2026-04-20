@@ -17,3 +17,8 @@ class TagUpdate(BaseModel):
 
 class TagRead(TagBase):
     id: UUID
+
+
+class TagPublicRead(BaseModel):
+    name: str
+    slug: str

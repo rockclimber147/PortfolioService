@@ -29,3 +29,13 @@ class EducationUpdate(BaseModel):
 class EducationRead(EducationBase):
     id: UUID
     created_at: datetime
+
+class EducationPublicRead(BaseModel):
+    id: UUID
+    institution: str
+    certificate: str
+    major: str
+    start_date: str
+    end_date: Optional[str]
+    location: Optional[str]
+    description: Optional[str]

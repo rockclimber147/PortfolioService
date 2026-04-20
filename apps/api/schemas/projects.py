@@ -2,7 +2,7 @@ from pydantic import BaseModel, HttpUrl
 from uuid import UUID
 from datetime import datetime
 from typing import Optional, List
-from .tags import TagRead
+from .tags import TagRead, TagPublicRead
 
 class ProjectBase(BaseModel):
     title: str
@@ -53,3 +53,17 @@ class ProjectUpdate(BaseModel):
     is_featured: Optional[bool] = None
     is_draft: Optional[bool] = None
     tag_ids: Optional[List[UUID]] = None
+
+class ProjectPublicRead(BaseModel):
+    id: UUID
+    title: str
+    slug: str
+    short_description: str
+    challenge: str
+    solution: str
+    impact: str
+    thumbnail_url: Optional[str]
+    github_url: Optional[str]
+    live_url: Optional[str]
+    is_featured: bool
+    tags: List[TagPublicRead] = []
