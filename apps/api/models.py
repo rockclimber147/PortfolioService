@@ -9,6 +9,12 @@ class ProjectTagLink(SQLModel, table=True):
     project_id: UUID = Field(foreign_key="projects.id", primary_key=True)
     tag_id: UUID = Field(foreign_key="tags.id", primary_key=True)
 
+class ExperienceTagLink(SQLModel, table=True):
+    __tablename__: Any = "experience_tag_links"
+    
+    experience_id: UUID = Field(foreign_key="work_experience.id", primary_key=True)
+    tag_id: UUID = Field(foreign_key="tags.id", primary_key=True)
+
 class Tag(SQLModel, table=True):
     __tablename__: Any = "tags"
     
@@ -17,6 +23,7 @@ class Tag(SQLModel, table=True):
     slug: str = Field(unique=True, index=True)
     
     projects: List["Project"] = Relationship(back_populates="tags", link_model=ProjectTagLink)
+    experiences: List["WorkExperience"] = Relationship(back_populates="tags", link_model=ExperienceTagLink)
 
 class Project(SQLModel, table=True):
     __tablename__ : Any = "projects"
@@ -48,3 +55,25 @@ class Profile(SQLModel, table=True):
     linkedin_url: Optional[str] = None
     email: str
     location: str = "Vancouver, BC"
+
+
+class WorkExperience(SQLModel, table=True):
+    __tablename__: Any = "work_experience"
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    company: str = Field(index=True)
+    role: str = Field(index=True)
+    location: Optional[str] = "Vancouver, BC"
+    
+    start_date: datetime
+    end_date: Optional[datetime] = None  # None if is_current is True
+    is_current: bool = False
+    
+    description: str  # Short summary for list views
+    long_description: str  # Detailed bullet points or Markdown
+    
+    company_url: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    # Relationship to tags
+    tags: List[Tag] = Relationship(back_populates="experiences", link_model=ExperienceTagLink)
