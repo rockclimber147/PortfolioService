@@ -21,6 +21,7 @@ class Tag(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(unique=True, index=True)
     slug: str = Field(unique=True, index=True)
+    is_draft: bool = True
     
     projects: List["Project"] = Relationship(back_populates="tags", link_model=ProjectTagLink)
     experiences: List["WorkExperience"] = Relationship(back_populates="tags", link_model=ExperienceTagLink)
@@ -39,7 +40,7 @@ class Project(SQLModel, table=True):
     github_url: Optional[str] = None
     live_url: Optional[str] = None
     is_featured: bool = False
-    is_draft: bool = False
+    is_draft: bool = True
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     # Relationship to tags
@@ -75,6 +76,8 @@ class WorkExperience(SQLModel, table=True):
     company_url: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+    is_draft: bool = True
+
     # Relationship to tags
     tags: List[Tag] = Relationship(back_populates="experiences", link_model=ExperienceTagLink)
 
@@ -93,3 +96,5 @@ class Education(SQLModel, table=True):
     description: Optional[str] = None # Optional bullet points or GPA info
     
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    is_draft: bool = True
