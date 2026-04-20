@@ -22,3 +22,8 @@ export type ProfileUpdate = Schemas["ProfileUpdate"]
 export type ExperienceRead = Schemas["ExperienceRead"];
 export type ExperienceCreate = Schemas["ExperienceCreate"];
 export type ExperienceUpdate = Schemas["ExperienceUpdate"];
+
+// --- Education Types ---
+export type EducationRead = Schemas["EducationRead"];
+export type EducationCreate = Schemas["EducationCreate"];
+export type EducationUpdate = Schemas["EducationUpdate"];

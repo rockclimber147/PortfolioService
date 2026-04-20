@@ -8,6 +8,7 @@ export const AdminLayout = () => {
 
   const navItems = [
     { label: 'Work Experience', path: '/dashboard/experience' },
+    { label: 'Education', path: '/dashboard/education' },
     { label: 'Projects', path: '/dashboard/projects' },
     { label: 'Tags', path: '/dashboard/tags' },
     { label: 'Profile', path: '/dashboard/profile' },

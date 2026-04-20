@@ -222,6 +222,42 @@ export interface paths {
         patch: operations["update_experience_admin_experience__exp_id__patch"];
         trace?: never;
     };
+    "/admin/education/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Education */
+        get: operations["list_education_admin_education__get"];
+        put?: never;
+        /** Create Education */
+        post: operations["create_education_admin_education__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/education/{edu_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Education */
+        delete: operations["delete_education_admin_education__edu_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Education */
+        patch: operations["update_education_admin_education__edu_id__patch"];
+        trace?: never;
+    };
     "/": {
         parameters: {
             query?: never;
@@ -243,6 +279,73 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** EducationCreate */
+        EducationCreate: {
+            /** Institution */
+            institution: string;
+            /** Certificate */
+            certificate: string;
+            /** Major */
+            major: string;
+            /** Start Date */
+            start_date: string;
+            /** End Date */
+            end_date?: string | null;
+            /**
+             * Location
+             * @default Vancouver, BC
+             */
+            location: string | null;
+            /** Description */
+            description?: string | null;
+        };
+        /** EducationRead */
+        EducationRead: {
+            /** Institution */
+            institution: string;
+            /** Certificate */
+            certificate: string;
+            /** Major */
+            major: string;
+            /** Start Date */
+            start_date: string;
+            /** End Date */
+            end_date?: string | null;
+            /**
+             * Location
+             * @default Vancouver, BC
+             */
+            location: string | null;
+            /** Description */
+            description?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** EducationUpdate */
+        EducationUpdate: {
+            /** Institution */
+            institution?: string | null;
+            /** Certificate */
+            certificate?: string | null;
+            /** Major */
+            major?: string | null;
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Description */
+            description?: string | null;
+        };
         /** ExperienceCreate */
         ExperienceCreate: {
             /** Company */
@@ -1168,6 +1271,123 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExperienceRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_education_admin_education__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EducationRead"][];
+                };
+            };
+        };
+    };
+    create_education_admin_education__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EducationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EducationRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_education_admin_education__edu_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                edu_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_education_admin_education__edu_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                edu_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EducationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EducationRead"];
                 };
             };
             /** @description Validation Error */

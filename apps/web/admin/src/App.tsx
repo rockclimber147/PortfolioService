@@ -11,6 +11,8 @@ import { ProjectManagementPage } from './pages/ProjectManagementPage';
 import { TagManagementPage } from './pages/TagManagementPage';
 import { ExperienceManagementPage } from './pages/ExperienceManagementPage';
 import { ExperienceFormPage } from './pages/ExperienceFormPage';
+import { EducationManagementPage } from './pages/EducationManagementPage';
+import { EducationFormPage } from './pages/EducationFormPage';
 
 export default function App() {
   const { apiKey } = useAuth();
@@ -43,7 +45,11 @@ export default function App() {
           <Route path="experience" element={<ExperienceManagementPage />} />
           <Route path="experience/new" element={<ExperienceFormPage />} />
           <Route path="experience/edit/:id" element={<ExperienceFormPage />} />
-          
+
+          <Route path="education" element={<EducationManagementPage />} />
+          <Route path="education/new" element={<EducationFormPage />} />
+          <Route path="education/edit/:id" element={<EducationFormPage />} />
+
           <Route path="projects" element={<ProjectManagementPage />} />
           <Route path="projects/new" element={<ProjectFormPage />} />
           <Route path="projects/edit/:id" element={<ProjectFormPage />} />

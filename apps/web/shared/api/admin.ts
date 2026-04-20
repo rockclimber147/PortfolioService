@@ -3,9 +3,8 @@ import type {
   ProjectDetail, ProjectCreate, ProjectUpdate, ProjectAdminRead, 
   TagCreate, TagRead, TagUpdate,
   ProfileRead, ProfileUpdate,
-  ExperienceRead,
-  ExperienceCreate,
-  ExperienceUpdate
+  ExperienceRead, ExperienceCreate, ExperienceUpdate,
+  EducationRead, EducationCreate, EducationUpdate
 } from "../types";
 
 export class AdminApiService extends ApiServiceBase {
@@ -150,4 +149,28 @@ export class AdminApiService extends ApiServiceBase {
       method: "DELETE" 
     });
   }
+
+  async listEducation(): Promise<EducationRead[]> {
+  return this.request<EducationRead[]>("/admin/education/");
+}
+
+async createEducation(data: EducationCreate): Promise<EducationRead> {
+  return this.request<EducationRead>("/admin/education/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+async updateEducation(id: string, data: EducationUpdate): Promise<EducationRead> {
+  return this.request<EducationRead>(`/admin/education/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+async deleteEducation(id: string): Promise<void> {
+  return this.request<void>(`/admin/education/${id}`, { 
+    method: "DELETE" 
+  });
+}
 }
