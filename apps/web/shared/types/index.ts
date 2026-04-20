@@ -17,3 +17,8 @@ export type TagUpdate = Schemas["TagUpdate"];
 // --- Profile Types ---
 export type ProfileRead = Schemas["ProfileRead"]
 export type ProfileUpdate = Schemas["ProfileUpdate"]
+
+// --- Experience Types ---
+export type ExperienceRead = Schemas["ExperienceRead"];
+export type ExperienceCreate = Schemas["ExperienceCreate"];
+export type ExperienceUpdate = Schemas["ExperienceUpdate"];

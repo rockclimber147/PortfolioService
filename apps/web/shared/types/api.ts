@@ -148,7 +148,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admin/profile/profile/": {
+    "/admin/profile/": {
         parameters: {
             query?: never;
             header?: never;
@@ -160,7 +160,7 @@ export interface paths {
          * @description Fetches the singleton profile record.
          *     If it doesn't exist yet, returns a 404 or a default state.
          */
-        get: operations["get_my_profile_admin_profile_profile__get"];
+        get: operations["get_my_profile_admin_profile__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -171,7 +171,55 @@ export interface paths {
          * @description Updates the singleton profile.
          *     Creates it if it doesn't exist (ID 1).
          */
-        patch: operations["update_my_profile_admin_profile_profile__patch"];
+        patch: operations["update_my_profile_admin_profile__patch"];
+        trace?: never;
+    };
+    "/admin/experience/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Experiences
+         * @description Lists all work experiences for the admin dashboard.
+         */
+        get: operations["list_experiences_admin_experience__get"];
+        put?: never;
+        /**
+         * Create Experience
+         * @description Creates a new work experience entry with optional tag links.
+         */
+        post: operations["create_experience_admin_experience__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/experience/{exp_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Experience
+         * @description Permanently removes a work experience entry.
+         */
+        delete: operations["delete_experience_admin_experience__exp_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Experience
+         * @description Updates an existing work experience, including its tag relationships.
+         */
+        patch: operations["update_experience_admin_experience__exp_id__patch"];
         trace?: never;
     };
     "/": {
@@ -195,6 +243,109 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ExperienceCreate */
+        ExperienceCreate: {
+            /** Company */
+            company: string;
+            /** Role */
+            role: string;
+            /**
+             * Location
+             * @default Vancouver, BC
+             */
+            location: string | null;
+            /**
+             * Start Date
+             * Format: date-time
+             */
+            start_date: string;
+            /** End Date */
+            end_date?: string | null;
+            /**
+             * Is Current
+             * @default false
+             */
+            is_current: boolean;
+            /** Description */
+            description: string;
+            /** Long Description */
+            long_description: string;
+            /** Company Url */
+            company_url?: string | null;
+            /**
+             * Tag Ids
+             * @default []
+             */
+            tag_ids: string[];
+        };
+        /** ExperienceRead */
+        ExperienceRead: {
+            /** Company */
+            company: string;
+            /** Role */
+            role: string;
+            /**
+             * Location
+             * @default Vancouver, BC
+             */
+            location: string | null;
+            /**
+             * Start Date
+             * Format: date-time
+             */
+            start_date: string;
+            /** End Date */
+            end_date?: string | null;
+            /**
+             * Is Current
+             * @default false
+             */
+            is_current: boolean;
+            /** Description */
+            description: string;
+            /** Long Description */
+            long_description: string;
+            /** Company Url */
+            company_url?: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Tags
+             * @default []
+             */
+            tags: components["schemas"]["TagRead"][];
+        };
+        /** ExperienceUpdate */
+        ExperienceUpdate: {
+            /** Company */
+            company?: string | null;
+            /** Role */
+            role?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Start Date */
+            start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
+            /** Is Current */
+            is_current?: boolean | null;
+            /** Description */
+            description?: string | null;
+            /** Long Description */
+            long_description?: string | null;
+            /** Company Url */
+            company_url?: string | null;
+            /** Tag Ids */
+            tag_ids?: string[] | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -860,7 +1011,7 @@ export interface operations {
             };
         };
     };
-    get_my_profile_admin_profile_profile__get: {
+    get_my_profile_admin_profile__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -880,7 +1031,7 @@ export interface operations {
             };
         };
     };
-    update_my_profile_admin_profile_profile__patch: {
+    update_my_profile_admin_profile__patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -900,6 +1051,123 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProfileRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_experiences_admin_experience__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExperienceRead"][];
+                };
+            };
+        };
+    };
+    create_experience_admin_experience__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperienceCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExperienceRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_experience_admin_experience__exp_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                exp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_experience_admin_experience__exp_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                exp_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExperienceUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExperienceRead"];
                 };
             };
             /** @description Validation Error */

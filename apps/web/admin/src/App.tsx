@@ -9,6 +9,8 @@ import { ProfilePage } from './pages/ProfilePage';
 import { AdminLayout } from './components/AdminLayout';
 import { ProjectManagementPage } from './pages/ProjectManagementPage';
 import { TagManagementPage } from './pages/TagManagementPage';
+import { ExperienceManagementPage } from './pages/ExperienceManagementPage';
+import { ExperienceFormPage } from './pages/ExperienceFormPage';
 
 export default function App() {
   const { apiKey } = useAuth();
@@ -37,6 +39,10 @@ export default function App() {
         >
           {/* CORRECTED: The index attribute on a Route component */}
           <Route index element={<Navigate to="projects" replace />} />
+          
+          <Route path="experience" element={<ExperienceManagementPage />} />
+          <Route path="experience/new" element={<ExperienceFormPage />} />
+          <Route path="experience/edit/:id" element={<ExperienceFormPage />} />
           
           <Route path="projects" element={<ProjectManagementPage />} />
           <Route path="projects/new" element={<ProjectFormPage />} />

@@ -2,7 +2,10 @@ import { ApiServiceBase } from "./base";
 import type { 
   ProjectDetail, ProjectCreate, ProjectUpdate, ProjectAdminRead, 
   TagCreate, TagRead, TagUpdate,
-  ProfileRead, ProfileUpdate
+  ProfileRead, ProfileUpdate,
+  ExperienceRead,
+  ExperienceCreate,
+  ExperienceUpdate
 } from "../types";
 
 export class AdminApiService extends ApiServiceBase {
@@ -116,6 +119,35 @@ export class AdminApiService extends ApiServiceBase {
     return this.request<ProfileRead>("/admin/profile/", {
       method: "PATCH",
       body: JSON.stringify(data),
+    });
+  }
+
+  async listExperiences(): Promise<ExperienceRead[]> {
+    return this.request<ExperienceRead[]>("/admin/experience/");
+  }
+
+  async getExperience(id: string): Promise<ExperienceRead> {
+    // If you added a specific GET by ID endpoint, use this
+    return this.request<ExperienceRead>(`/admin/experience/${id}`);
+  }
+
+  async createExperience(data: ExperienceCreate): Promise<ExperienceRead> {
+    return this.request<ExperienceRead>("/admin/experience/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateExperience(id: string, data: ExperienceUpdate): Promise<ExperienceRead> {
+    return this.request<ExperienceRead>(`/admin/experience/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteExperience(id: string): Promise<void> {
+    return this.request<void>(`/admin/experience/${id}`, { 
+      method: "DELETE" 
     });
   }
 }
