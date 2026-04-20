@@ -77,3 +77,19 @@ class WorkExperience(SQLModel, table=True):
 
     # Relationship to tags
     tags: List[Tag] = Relationship(back_populates="experiences", link_model=ExperienceTagLink)
+
+class Education(SQLModel, table=True):
+    __tablename__: Any = "education"
+
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    institution: str = Field(index=True)
+    certificate: str
+    major: str
+    
+    start_date: str 
+    end_date: Optional[str] = None 
+    
+    location: Optional[str] = "Vancouver, BC"
+    description: Optional[str] = None # Optional bullet points or GPA info
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)
