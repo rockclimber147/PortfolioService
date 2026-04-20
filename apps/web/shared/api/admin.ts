@@ -151,26 +151,26 @@ export class AdminApiService extends ApiServiceBase {
   }
 
   async listEducation(): Promise<EducationRead[]> {
-  return this.request<EducationRead[]>("/admin/education/");
-}
+    return this.request<EducationRead[]>("/admin/education/");
+  }
 
-async createEducation(data: EducationCreate): Promise<EducationRead> {
-  return this.request<EducationRead>("/admin/education/", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
+  async createEducation(data: EducationCreate): Promise<EducationRead> {
+    return this.request<EducationRead>("/admin/education/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
 
-async updateEducation(id: string, data: EducationUpdate): Promise<EducationRead> {
-  return this.request<EducationRead>(`/admin/education/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
-}
+  async updateEducation(id: string, data: EducationUpdate): Promise<EducationRead> {
+    return this.request<EducationRead>(`/admin/education/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
 
-async deleteEducation(id: string): Promise<void> {
-  return this.request<void>(`/admin/education/${id}`, { 
-    method: "DELETE" 
-  });
-}
+  async deleteEducation(id: string): Promise<void> {
+    return this.request<void>(`/admin/education/${id}`, { 
+      method: "DELETE" 
+    });
+  }
 }
