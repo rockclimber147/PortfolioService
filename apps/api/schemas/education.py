@@ -11,6 +11,7 @@ class EducationBase(BaseModel):
     end_date: Optional[str] = None
     location: Optional[str] = "Vancouver, BC"
     description: Optional[str] = None
+    is_draft: bool = False
 
 class EducationCreate(EducationBase):
     pass
@@ -23,6 +24,7 @@ class EducationUpdate(BaseModel):
     end_date: Optional[str] = None
     location: Optional[str] = None
     description: Optional[str] = None
+    is_draft: Optional[bool] = None
 
 class EducationRead(EducationBase):
     id: UUID

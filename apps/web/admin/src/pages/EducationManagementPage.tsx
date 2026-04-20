@@ -1,3 +1,4 @@
+// apps/web/admin/pages/EducationManagementPage.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
@@ -21,7 +22,7 @@ export const EducationManagementPage = () => {
   }, [adminApi]);
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation(); // Prevent row click
+    e.stopPropagation(); // Stop GenericTable's onRowClick
     if (!confirm("Delete education record?")) return;
     try {
       await adminApi.deleteEducation(id);
@@ -59,19 +60,34 @@ export const EducationManagementPage = () => {
       ),
     },
     {
+      header: 'Status',
+      render: (edu) => (
+        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+          edu.is_draft 
+            ? 'bg-amber-50 text-amber-700 border-amber-100' 
+            : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+        }`}>
+          {edu.is_draft ? 'Draft' : 'Live'}
+        </span>
+      ),
+    },
+    {
       header: 'Actions',
       className: 'text-right',
       render: (edu) => (
         <div className="space-x-3">
           <button 
-            onClick={() => navigate(`edit/${edu.id}`)}
-            className="text-blue-600 hover:text-blue-900 font-medium"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`edit/${edu.id}`);
+            }}
+            className="text-blue-600 hover:text-blue-900 font-medium transition-colors"
           >
             Edit
           </button>
           <button 
             onClick={(e) => handleDelete(e, edu.id)}
-            className="text-red-500 hover:text-red-700 font-medium"
+            className="text-red-500 hover:text-red-700 font-medium transition-colors"
           >
             Delete
           </button>
@@ -91,7 +107,7 @@ export const EducationManagementPage = () => {
         </div>
         <button 
           onClick={() => navigate('new')}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 shadow-sm transition-all"
         >
           + Add Education
         </button>
@@ -99,9 +115,15 @@ export const EducationManagementPage = () => {
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {education.length > 0 ? (
-          <GenericTable items={education} columns={columns} />
+          <GenericTable 
+            items={education} 
+            columns={columns} 
+            onRowClick={(edu) => navigate(`edit/${edu.id}`)}
+          />
         ) : (
-          <div className="p-12 text-center text-gray-400 italic">No education records found.</div>
+          <div className="p-12 text-center text-gray-400 italic">
+            No education records found.
+          </div>
         )}
       </div>
     </div>

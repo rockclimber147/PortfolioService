@@ -10,6 +10,7 @@ class ProfileBase(BaseModel):
     linkedin_url: Optional[HttpUrl] = None
     email: EmailStr
     location: str = "Vancouver, BC"
+    is_draft: bool = False
 
 class ProfileRead(ProfileBase):
     id: int
@@ -24,3 +25,4 @@ class ProfileUpdate(BaseModel):
     linkedin_url: Optional[HttpUrl] = None
     email: Optional[EmailStr] = None
     location: Optional[str] = None
+    is_draft: Optional[bool] = None

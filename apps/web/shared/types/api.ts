@@ -298,6 +298,11 @@ export interface components {
             location: string | null;
             /** Description */
             description?: string | null;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
         };
         /** EducationRead */
         EducationRead: {
@@ -318,6 +323,11 @@ export interface components {
             location: string | null;
             /** Description */
             description?: string | null;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
             /**
              * Id
              * Format: uuid
@@ -345,6 +355,8 @@ export interface components {
             location?: string | null;
             /** Description */
             description?: string | null;
+            /** Is Draft */
+            is_draft?: boolean | null;
         };
         /** ExperienceCreate */
         ExperienceCreate: {
@@ -375,6 +387,11 @@ export interface components {
             long_description: string;
             /** Company Url */
             company_url?: string | null;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
             /**
              * Tag Ids
              * @default []
@@ -410,6 +427,11 @@ export interface components {
             long_description: string;
             /** Company Url */
             company_url?: string | null;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
             /**
              * Id
              * Format: uuid
@@ -448,6 +470,8 @@ export interface components {
             company_url?: string | null;
             /** Tag Ids */
             tag_ids?: string[] | null;
+            /** Is Draft */
+            is_draft?: boolean | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -478,6 +502,11 @@ export interface components {
              * @default Vancouver, BC
              */
             location: string;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
             /** Id */
             id: number;
         };
@@ -499,6 +528,8 @@ export interface components {
             email?: string | null;
             /** Location */
             location?: string | null;
+            /** Is Draft */
+            is_draft?: boolean | null;
         };
         /** ProjectAdminRead */
         ProjectAdminRead: {
@@ -670,6 +701,11 @@ export interface components {
             name: string;
             /** Slug */
             slug: string;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
         };
         /** TagRead */
         TagRead: {
@@ -677,6 +713,11 @@ export interface components {
             name: string;
             /** Slug */
             slug: string;
+            /**
+             * Is Draft
+             * @default false
+             */
+            is_draft: boolean;
             /**
              * Id
              * Format: uuid
@@ -689,6 +730,8 @@ export interface components {
             name?: string | null;
             /** Slug */
             slug?: string | null;
+            /** Is Draft */
+            is_draft?: boolean | null;
         };
         /** UploadRequest */
         UploadRequest: {

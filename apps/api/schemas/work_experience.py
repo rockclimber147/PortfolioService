@@ -14,6 +14,7 @@ class ExperienceBase(BaseModel):
     description: str
     long_description: str
     company_url: Optional[str] = None
+    is_draft: bool = False
 
 class ExperienceCreate(ExperienceBase):
     tag_ids: List[UUID] = []
@@ -29,6 +30,7 @@ class ExperienceUpdate(BaseModel):
     long_description: Optional[str] = None
     company_url: Optional[str] = None
     tag_ids: Optional[List[UUID]] = None
+    is_draft: Optional[bool] = None
 
 class ExperienceRead(ExperienceBase):
     id: UUID

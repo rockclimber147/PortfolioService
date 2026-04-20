@@ -1,4 +1,3 @@
-// apps/web/admin/pages/EducationFormPage.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AdminAuthContext';
@@ -16,7 +15,8 @@ export const EducationFormPage = () => {
     start_date: '',
     end_date: '',
     location: 'Vancouver, BC',
-    description: ''
+    description: '',
+    is_draft: true // Default to true for new records
   });
 
   const adminApi = useMemo(() => 
@@ -55,9 +55,16 @@ export const EducationFormPage = () => {
         <div className="max-w-3xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('/dashboard/education')} className="text-gray-400 hover:text-gray-600">← Back</button>
-            <h1 className="text-xl font-bold text-gray-900">{id ? 'Edit Education' : 'Add Education'}</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-gray-900">{id ? 'Edit Education' : 'Add Education'}</h1>
+              {formData.is_draft && (
+                <span className="px-2 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-bold uppercase rounded border border-amber-100">
+                  Draft
+                </span>
+              )}
+            </div>
           </div>
-          <button onClick={handleSubmit} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm">
+          <button onClick={handleSubmit} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all active:scale-95">
             Save Record
           </button>
         </div>
@@ -138,6 +145,22 @@ export const EducationFormPage = () => {
                 value={formData.description || ''} 
                 onChange={e => setFormData({...formData, description: e.target.value})} 
               />
+            </div>
+
+            {/* Draft Toggle Section */}
+            <div className="md:col-span-2 pt-4 border-t border-gray-100">
+              <label className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
+                <input 
+                  type="checkbox" 
+                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" 
+                  checked={formData.is_draft} 
+                  onChange={e => setFormData({...formData, is_draft: e.target.checked})} 
+                />
+                <div>
+                  <span className="block text-sm font-semibold text-gray-700">Save as Draft</span>
+                  <span className="block text-xs text-gray-500">Drafts are hidden from the public portfolio site.</span>
+                </div>
+              </label>
             </div>
           </div>
         </form>

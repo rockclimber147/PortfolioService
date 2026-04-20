@@ -1115,6 +1115,11 @@
               }
             ],
             "title": "Description"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           }
         },
         "type": "object",
@@ -1177,6 +1182,11 @@
               }
             ],
             "title": "Description"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           },
           "id": {
             "type": "string",
@@ -1278,6 +1288,17 @@
               }
             ],
             "title": "Description"
+          },
+          "is_draft": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Draft"
           }
         },
         "type": "object",
@@ -1345,6 +1366,11 @@
               }
             ],
             "title": "Company Url"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           },
           "tag_ids": {
             "items": {
@@ -1428,6 +1454,11 @@
               }
             ],
             "title": "Company Url"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           },
           "id": {
             "type": "string",
@@ -1577,6 +1608,17 @@
               }
             ],
             "title": "Tag Ids"
+          },
+          "is_draft": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Draft"
           }
         },
         "type": "object",
@@ -1667,6 +1709,11 @@
             "type": "string",
             "title": "Location",
             "default": "Vancouver, BC"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           },
           "id": {
             "type": "integer",
@@ -1781,6 +1828,17 @@
               }
             ],
             "title": "Location"
+          },
+          "is_draft": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Draft"
           }
         },
         "type": "object",
@@ -2323,6 +2381,11 @@
           "slug": {
             "type": "string",
             "title": "Slug"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           }
         },
         "type": "object",
@@ -2341,6 +2404,11 @@
           "slug": {
             "type": "string",
             "title": "Slug"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "title": "Is Draft",
+            "default": false
           },
           "id": {
             "type": "string",
@@ -2379,6 +2447,17 @@
               }
             ],
             "title": "Slug"
+          },
+          "is_draft": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Draft"
           }
         },
         "type": "object",

@@ -11,9 +11,17 @@ export const ExperienceFormPage = () => {
   const { apiKey } = useAuth();
   
   const [formData, setFormData] = useState<Partial<ExperienceCreate>>({
-    company: '', role: '', location: 'Vancouver, BC',
-    start_date: '', end_date: '', is_current: false,
-    description: '', long_description: '', company_url: '', tag_ids: []
+    company: '', 
+    role: '', 
+    location: 'Vancouver, BC',
+    start_date: '', 
+    end_date: '', 
+    is_current: false,
+    is_draft: true, // Default to true for safety
+    description: '', 
+    long_description: '', 
+    company_url: '', 
+    tag_ids: []
   });
 
   const adminApi = useMemo(() => 
@@ -27,7 +35,6 @@ export const ExperienceFormPage = () => {
         if (existing) {
           setFormData({
             ...existing,
-            // Format dates for HTML input (YYYY-MM-DD)
             start_date: existing.start_date.split('T')[0],
             end_date: existing.end_date ? existing.end_date.split('T')[0] : '',
             tag_ids: existing.tags.map(t => t.id)
@@ -39,7 +46,6 @@ export const ExperienceFormPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Clean up end_date if currently employed
     const submissionData = {
       ...formData,
       end_date: formData.is_current ? null : formData.end_date
@@ -65,10 +71,17 @@ export const ExperienceFormPage = () => {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10 px-4 py-4">
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/dashboard/experience')} className="text-gray-400 hover:text-gray-600">← Back</button>
-            <h1 className="text-xl font-bold text-gray-900">{id ? 'Edit Experience' : 'New Experience'}</h1>
+            <button onClick={() => navigate('/dashboard/experience')} className="text-gray-400 hover:text-gray-600 transition-colors">← Back</button>
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-gray-900">{id ? 'Edit Experience' : 'New Experience'}</h1>
+              {formData.is_draft && (
+                <span className="px-2 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-bold uppercase rounded border border-amber-100">
+                  Draft
+                </span>
+              )}
+            </div>
           </div>
-          <button onClick={handleSubmit} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm">
+          <button onClick={handleSubmit} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all active:scale-95">
             {id ? 'Save Changes' : 'Add Experience'}
           </button>
         </div>
@@ -97,18 +110,35 @@ export const ExperienceFormPage = () => {
 
               <div>
                 <label className={labelClass}>Key Achievements (Markdown)</label>
-                <textarea rows={8} className={inputClass} value={formData.long_description} onChange={e => setFormData({...formData, long_description: e.target.value})} required />
+                <textarea rows={12} className={`${inputClass} font-mono text-xs`} value={formData.long_description} onChange={e => setFormData({...formData, long_description: e.target.value})} required />
               </div>
             </div>
           </div>
 
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
-              <div className="space-y-4">
-                <label className="flex items-center gap-3 cursor-pointer p-3 border border-gray-100 rounded-lg hover:bg-gray-50">
+              
+              {/* Draft Status Toggle */}
+              <div className="pb-6 border-b border-gray-100">
+                <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                   <input 
                     type="checkbox" 
-                    className="w-4 h-4 text-blue-600" 
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300" 
+                    checked={formData.is_draft} 
+                    onChange={e => setFormData({...formData, is_draft: e.target.checked})} 
+                  />
+                  <div>
+                    <span className="block text-sm font-semibold text-gray-700">Save as Draft</span>
+                    <span className="block text-[10px] text-gray-500">Hidden from public portfolio</span>
+                  </div>
+                </label>
+              </div>
+
+              <div className="space-y-4">
+                <label className="flex items-center gap-3 cursor-pointer p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 text-blue-600 rounded border-gray-300" 
                     checked={formData.is_current} 
                     onChange={e => setFormData({...formData, is_current: e.target.checked})} 
                   />
@@ -123,14 +153,14 @@ export const ExperienceFormPage = () => {
                 {!formData.is_current && (
                   <div>
                     <label className={labelClass}>End Date</label>
-                    <input type="date" className={inputClass} value={formData.end_date ?? undefined} onChange={e => setFormData({...formData, end_date: e.target.value})} />
+                    <input type="date" className={inputClass} value={formData.end_date ?? ''} onChange={e => setFormData({...formData, end_date: e.target.value})} />
                   </div>
                 )}
               </div>
 
               <div>
                 <label className={labelClass}>Company Website</label>
-                <input className={inputClass} placeholder="https://..." value={formData.company_url ?? undefined} onChange={e => setFormData({...formData, company_url: e.target.value})} />
+                <input className={inputClass} placeholder="https://..." value={formData.company_url ?? ''} onChange={e => setFormData({...formData, company_url: e.target.value})} />
               </div>
 
               <div className="pt-4 border-t border-gray-100">
