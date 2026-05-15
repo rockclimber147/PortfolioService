@@ -12,8 +12,8 @@ export const Login = () => {
     setIsVerifying(true);
     setError(null);
     
-    const testApi = new AdminApiService(import.meta.env.VITE_API_URL, keyInput);
-    const isValid = await testApi.verifyKey();
+    const testApi = new AdminApiService(import.meta.env.VITE_API_URL);
+    const isValid = await testApi.login(keyInput);
 
     if (isValid) {
       login(keyInput); 

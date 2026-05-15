@@ -8,34 +8,62 @@ import type {
 } from "../types";
 
 export class AdminApiService extends ApiServiceBase {
-  private readonly apiKey: string;
-  constructor(baseUrl: string, apiKey: string) {
+  constructor(baseUrl: string) {
     super(baseUrl);
-    // 2. Assign the value manually
-    this.apiKey = apiKey;
   }
 
-  // Override the request method or just pass headers in each call
+  /**
+   * Override the base request to ensure cookies are always sent.
+   * Note: If your base class already handles 'credentials', you can skip this.
+   */
   protected override async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     return super.request<T>(endpoint, {
       ...options,
+      credentials: "include", // Required for HttpOnly cookies
       headers: {
+        "Content-Type": "application/json",
         ...options.headers,
-        "X-API-KEY": this.apiKey, // Admin secret is injected here
       },
     });
   }
 
+  /**
+   * New Login Method: Sets the HttpOnly cookie on the backend
+   */
+  async login(apiKey: string): Promise<boolean> {
+    try {
+      await this.request("/admin/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ api_key: apiKey }),
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * New Logout Method: Clears the cookie
+   */
+  async logout(): Promise<void> {
+    await this.request("/admin/auth/logout", { method: "POST" });
+  }
+
+  /**
+   * Verifies if the current session cookie is valid
+   */
   async verifyKey(): Promise<boolean> {
     try {
-        await this.request<{status: string}>("/admin/verify", {
-          method: "POST",
-        });
-        return true;
-      } catch (error) {
-        return false;
-      }
+      await this.request<{ status: string }>("/admin/verify", {
+        method: "POST",
+      });
+      return true;
+    } catch (error) {
+      return false;
     }
+  }
+
+  /* --- CRUD Methods (ApiKey injection removed) --- */
 
   async createProject(data: ProjectCreate): Promise<ProjectDetail> {
     return this.request<ProjectDetail>("/admin/projects", {
@@ -95,11 +123,12 @@ export class AdminApiService extends ApiServiceBase {
       }),
     });
 
+    // S3 uploads usually don't want your session cookies
     const s3Response = await fetch(upload_url, {
       method: "PUT",
       body: file,
       headers: {
-        "Content-Type": file.type, // Must match exactly what was sent to FastAPI
+        "Content-Type": file.type,
       },
     });
 
@@ -126,7 +155,6 @@ export class AdminApiService extends ApiServiceBase {
   }
 
   async getExperience(id: string): Promise<ExperienceRead> {
-    // If you added a specific GET by ID endpoint, use this
     return this.request<ExperienceRead>(`/admin/experience/${id}`);
   }
 

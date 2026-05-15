@@ -45,11 +45,7 @@ app.add_middleware(
 )
 
 app.include_router(client.router)
-app.include_router(
-    admin_router,
-    prefix="/admin",
-    dependencies=[Depends(AuthService.verify_admin)]
-)
+app.include_router(admin_router, prefix="/admin")
 
 @app.get("/")
 def read_root():
