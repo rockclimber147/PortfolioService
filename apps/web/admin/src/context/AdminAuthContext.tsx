@@ -1,26 +1,36 @@
-import React, { createContext, useContext, useState } from 'react';
+import { AdminApiService } from '@portfolio/shared';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext<{
-  apiKey: string | null;
-  login: (key: string) => void;
+  isAuthenticated: boolean;
+  login: () => void; // No arguments needed anymore
   logout: () => void;
 } | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [apiKey, setApiKey] = useState<string | null>(sessionStorage.getItem('admin_key'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); 
 
-  const login = (key: string) => {
-    sessionStorage.setItem('admin_key', key);
-    setApiKey(key);
-  };
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const api = new AdminApiService(import.meta.env.VITE_API_URL);
+        const valid = await api.verifyKey();
+        setIsAuthenticated(valid);
+      } catch {
+        setIsAuthenticated(false);
+      } finally {
+        // CRITICAL: This stops the "hang"
+        setIsLoading(false); 
+      }
+    };
+    checkSession();
+  }, []);
 
-  const logout = () => {
-    sessionStorage.removeItem('admin_key');
-    setApiKey(null);
-  };
+  if (isLoading) return <div>Verifying Session...</div>;
 
   return (
-    <AuthContext.Provider value={{ apiKey, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login: () => setIsAuthenticated(true), logout: () => setIsAuthenticated(false) }}>
       {children}
     </AuthContext.Provider>
   );

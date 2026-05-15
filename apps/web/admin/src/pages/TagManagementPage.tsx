@@ -1,18 +1,16 @@
 // apps/web/admin/pages/TagManagementPage.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type TagRead } from '@portfolio/shared';
 import { GenericTable, type Column } from '../components/shared/GenericTable';
 
 export const TagManagementPage = () => {
-  const { apiKey } = useAuth();
   const navigate = useNavigate();
   const [tags, setTags] = useState<TagRead[]>([]);
   const [loading, setLoading] = useState(true);
 
   const adminApi = useMemo(() => 
-    new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
+    new AdminApiService(import.meta.env.VITE_API_URL), []
   );
 
   useEffect(() => {

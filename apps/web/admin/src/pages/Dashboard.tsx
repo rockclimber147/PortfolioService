@@ -7,7 +7,7 @@ import { ProjectTable } from '../components/ProjectTable';
 import { TagTable } from '../components/TagTable';
 
 export const Dashboard = () => {
-  const { apiKey, logout } = useAuth();
+  const {logout } = useAuth();
   const [projects, setProjects] = useState<ProjectAdminRead[]>([]);
   const [tags, setTags] = useState<TagRead[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ export const Dashboard = () => {
   const navigate = useNavigate();
 
   const adminApi = useMemo(() => 
-    new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
+    new AdminApiService(import.meta.env.VITE_API_URL), []
   );
 
   useEffect(() => {

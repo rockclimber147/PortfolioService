@@ -10,13 +10,11 @@ export const Login = () => {
 
   const handleLogin = async () => {
     setIsVerifying(true);
-    setError(null);
-    
     const testApi = new AdminApiService(import.meta.env.VITE_API_URL);
-    const isValid = await testApi.login(keyInput);
+    const isValid = await testApi.login(keyInput); // Key goes to server, then dies
 
     if (isValid) {
-      login(keyInput); 
+      login(); // No key passed here! sessionStorage stays empty.
     } else {
       setError("Invalid Secret Key");
       setIsVerifying(false);

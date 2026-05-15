@@ -1,12 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type EducationCreate, type EducationUpdate } from '@portfolio/shared';
 
 export const EducationFormPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { apiKey } = useAuth();
   
   const [formData, setFormData] = useState<Partial<EducationCreate>>({
     institution: '',
@@ -20,7 +18,7 @@ export const EducationFormPage = () => {
   });
 
   const adminApi = useMemo(() => 
-    new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
+    new AdminApiService(import.meta.env.VITE_API_URL), []
   );
 
   useEffect(() => {

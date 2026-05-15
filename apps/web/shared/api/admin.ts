@@ -54,7 +54,7 @@ export class AdminApiService extends ApiServiceBase {
    */
   async verifyKey(): Promise<boolean> {
     try {
-      await this.request<{ status: string }>("/admin/verify", {
+      await this.request<{ status: string }>("/admin/auth/verify", {
         method: "POST",
       });
       return true;

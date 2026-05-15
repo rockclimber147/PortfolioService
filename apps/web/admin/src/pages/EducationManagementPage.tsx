@@ -1,18 +1,16 @@
 // apps/web/admin/pages/EducationManagementPage.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type EducationRead } from '@portfolio/shared';
 import { GenericTable, type Column } from '../components/shared/GenericTable';
 
 export const EducationManagementPage = () => {
-  const { apiKey } = useAuth();
   const navigate = useNavigate();
   const [education, setEducation] = useState<EducationRead[]>([]);
   const [loading, setLoading] = useState(true);
 
   const adminApi = useMemo(() => 
-    new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
+    new AdminApiService(import.meta.env.VITE_API_URL), []
   );
 
   useEffect(() => {

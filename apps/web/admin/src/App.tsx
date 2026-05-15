@@ -15,10 +15,10 @@ import { EducationManagementPage } from './pages/EducationManagementPage';
 import { EducationFormPage } from './pages/EducationFormPage';
 
 export default function App() {
-  const { apiKey } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-    return apiKey ? children : <Navigate to="/" />;
+    return isAuthenticated ? children : <Navigate to="/" />;
   };
 
   return (
@@ -27,7 +27,7 @@ export default function App() {
         {/* Public Route */}
         <Route 
           path="/" 
-          element={apiKey ? <Navigate to="/dashboard" /> : <Login />} 
+          element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} 
         />
 
         {/* Protected Admin Shell */}
@@ -39,7 +39,6 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          {/* CORRECTED: The index attribute on a Route component */}
           <Route index element={<Navigate to="projects" replace />} />
           
           <Route path="experience" element={<ExperienceManagementPage />} />

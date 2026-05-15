@@ -1,7 +1,5 @@
-// apps/web/admin/pages/ProjectFormPage.tsx
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProjectCreate, type ProjectUpdate } from '@portfolio/shared';
 import { TagSelector } from '../components/TagSelector';
 import { ImageUpload } from '../components/ImageUpload';
@@ -9,7 +7,6 @@ import { ImageUpload } from '../components/ImageUpload';
 export const ProjectFormPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { apiKey } = useAuth();
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -27,7 +24,7 @@ export const ProjectFormPage = () => {
   });
 
   const adminApi = useMemo(() => 
-    new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
+    new AdminApiService(import.meta.env.VITE_API_URL), []
   );
 
   useEffect(() => {

@@ -1,12 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AdminAuthContext';
 import { AdminApiService, type ProfileUpdate } from '@portfolio/shared';
 import { ImageUpload } from '../components/ImageUpload';
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
-  const { apiKey } = useAuth();
   
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -16,7 +14,7 @@ export const ProfilePage = () => {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   const adminApi = useMemo(() => 
-    new AdminApiService(import.meta.env.VITE_API_URL, apiKey!), [apiKey]
+    new AdminApiService(import.meta.env.VITE_API_URL), []
   );
 
   useEffect(() => {
